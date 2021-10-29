@@ -12,6 +12,46 @@ init();
 
 
 
+const displayController = (() => {
+
+    const _boardContainer = document.querySelector('.boardContainer');
+    
+    const boardNL = document.querySelectorAll('.boardSlot');
+    
+    const _boardList = [];
+    for(var i = boardNL.length; i--; _boardList.unshift(boardNL[i]));
+
+    let _currDisplay;
+    // The following is an init line that creates a JS reference to boardContainer's visible styling
+    if (_boardContainer.style.display === "") _currDisplay = "grid";
+
+
+
+
+    const toggleGameBoard = () => {
+        if (_currDisplay === "grid") {
+            _boardContainer.style.display = "none";
+            _currDisplay = "none";
+        } else {
+            _boardContainer.style.display = "grid";
+            _currDisplay = "grid";
+        }
+    }
+
+    const getInfo = () => {
+        console.log(_boardContainer);
+        console.log(_boardList);
+    }
+
+    return {
+        getInfo,
+        toggleGameBoard,
+    };
+
+})();
+
+
+
 
 function init() {
 
