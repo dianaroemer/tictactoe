@@ -10,7 +10,41 @@
 
 */
 
+const gameBoard = (() => {
 
+    let _gameBoard = [];
+
+    // Sets the current _gameBoard based off incomingBoard array
+    const setGameBoard = (incomingBoard) => {
+        _gameBoard = incomingBoard;
+    }
+
+    // Returns current gameBoard
+    const getGameBoard = () => {
+        return _gameBoard;
+    }
+
+
+
+    // XXXUPDATEXXX This needs to be updated to work off a passed in array argument, rather than calling off the DOM
+    // This needs to be removed and set into its specific calling functions
+    const boardNL = document.querySelectorAll('.boardSlot');
+    // Updates the gameBoard[] with the currently populated gameBoard divs
+    const updateGameBoard = (args) => {
+        const _boardTempList = [];
+        for(var i = boardNL.length; i--; _boardTempList.unshift(boardNL[i].innerText));
+        _gameBoard = _boardTempList;
+    }
+
+
+    return {
+        setGameBoard,
+        getGameBoard,
+        updateGameBoard,
+
+    }
+
+})();
 
 const displayController = (() => {
 
@@ -60,6 +94,7 @@ const displayController = (() => {
         _boardList.forEach( e => {
             e.innerText = "";
         })
+        gameBoard.updateGameBoard();
     }
 
     const randomizedBoard = () => {
@@ -71,7 +106,7 @@ const displayController = (() => {
         // Randomly determine a legal number of turns to "have played, from 0 to 9"
         let newBoardLen = Math.floor(Math.random() * 10);
 
-        // Populate array based on number of legal turns to "have played", and fill out rest of array
+        // Populate array based on number of legal turns to "have randomly played", and fill out rest of array
         for ( let i = 0; i < 9; i++) {
             if (newBoardLen == 0){
                 randomBoardState.push("");
@@ -96,17 +131,6 @@ const displayController = (() => {
         // clearInter(intervalID); // Ends the randomized cycling
 
     }
-
-    // Populate the board given a specific boardState
-    const populateBoard = (incomingBoardState) => {
-
-        clearBoard();
-
-
-
-    }
-
-
 
     const toggleGameBoard = () => {
         if (_currDisplay === "grid") {
@@ -141,7 +165,7 @@ init();
 
 function init() {
 
-    let intervalID = setInterval(displayController.randomizedBoard, 750);
+    // let intervalID = setInterval(displayController.randomizedBoard, 1000);
 
     console.log("Init has completed successfully");
     return;
