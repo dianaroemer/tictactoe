@@ -1,4 +1,3 @@
-init();
 
 // Needed objects
 /* 
@@ -63,6 +62,51 @@ const displayController = (() => {
         })
     }
 
+    const randomizedBoard = () => {
+
+        clearBoard();
+
+        let randomBoardState = []
+
+        // Randomly determine a legal number of turns to "have played, from 0 to 9"
+        let newBoardLen = Math.floor(Math.random() * 10);
+
+        // Populate array based on number of legal turns to "have played", and fill out rest of array
+        for ( let i = 0; i < 9; i++) {
+            if (newBoardLen == 0){
+                randomBoardState.push("");
+            } else {
+                if ( i % 2 == 0) {
+                    randomBoardState.push("X");
+                } else {
+                    randomBoardState.push("O");
+                }
+                newBoardLen--;
+            }
+        }
+
+        // Populate _boardList with random ordered elements from randomBoardState
+        _boardList.forEach( element => {
+            element.innerHTML = randomBoardState.splice(Math.floor(Math.random() * randomBoardState.length), 1);
+
+        })
+
+        // To call randomizedBoard
+        // let intervalID = setInterval(displayController.randomizedBoard, 750);
+        // clearInter(intervalID); // Ends the randomized cycling
+
+    }
+
+    // Populate the board given a specific boardState
+    const populateBoard = (incomingBoardState) => {
+
+        clearBoard();
+
+
+
+    }
+
+
 
     const toggleGameBoard = () => {
         if (_currDisplay === "grid") {
@@ -86,14 +130,18 @@ const displayController = (() => {
         toggleGameBoard,
         clearBoard,
         cycleBoard,
+        randomizedBoard,
     };
 
 })();
 
 
 
+init();
 
 function init() {
+
+    let intervalID = setInterval(displayController.randomizedBoard, 750);
 
     console.log("Init has completed successfully");
     return;
