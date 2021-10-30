@@ -4,6 +4,7 @@ init();
 /* 
     1. Gameboard - Module
     2. DisplayController - Module
+    3. GameState - Module???
     3. Player 1 - Factory Object
     4. Player 2 - Factory Object
     5. AI - Factory Object
@@ -25,7 +26,42 @@ const displayController = (() => {
     // The following is an init line that creates a JS reference to boardContainer's visible styling
     if (_boardContainer.style.display === "") _currDisplay = "grid";
 
+    const cycleBoard = () => {
 
+        let iter = 0;
+        let intervalID = setInterval( () => {
+
+            if (iter < _boardList.length){
+                _boardList[iter].innerHTML = "X";
+            }
+            
+            if(iter > 3 && iter < _boardList.length + 4 ) {
+                _boardList[iter - 4].innerHTML = "O";
+            }
+
+            if( iter > 7 && iter < _boardList.length + 8) {
+                _boardList[iter-8].innerHTML = "X";
+            }
+
+            if( iter > 11 && iter < _boardList.length + 12) {
+                _boardList[iter-12].innerHTML = "";
+            }
+
+            iter++;
+
+            // console.log('still running');
+            if (iter >= _boardList.length + 12) {
+                clearInterval(intervalID);
+            }
+        }, 70);
+
+    }
+
+    const clearBoard = () => {
+        _boardList.forEach( e => {
+            e.innerText = "";
+        })
+    }
 
 
     const toggleGameBoard = () => {
@@ -43,9 +79,13 @@ const displayController = (() => {
         console.log(_boardList);
     }
 
+
+
     return {
         getInfo,
         toggleGameBoard,
+        clearBoard,
+        cycleBoard,
     };
 
 })();
