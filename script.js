@@ -12,7 +12,7 @@
 
 const gameBoard = (() => {
 
-    let _gameBoard = [];
+    let _gameBoard = ["", "", "", "", "", "", "", "", ""];
 
     // Sets the current _gameBoard based off incomingBoard array
     const setGameBoard = (incomingBoard) => {
@@ -20,28 +20,37 @@ const gameBoard = (() => {
     }
 
     // Returns current gameBoard
-    const getGameBoard = () => {
+    const getInfo = () => {
         return _gameBoard;
     }
 
+    const updateGameBoard = (index, incomingValue) => {
+        
+        if(index > 8 || index < 0) {
+            console.log(`ERROR: updateGameBoard failed because index was out of bounds! index of: "${index}"`)
+            return false;
+        };
+        switch (incomingValue) {
+            case "X":
+            case "O":
+            case "":
+                _gameBoard[index] = incomingValue;
+                displayController.updateDOMBoard(_gameBoard);
+                return true;
+            default:
+                console.log(`ERROR: updateGameBoard's incomingValue was invalid! incomingValue of: "${incomingValue}"`);
+                return false;
+        }
 
 
-    // XXXUPDATEXXX This needs to be updated to work off a passed in array argument, rather than calling off the DOM
-    // This needs to be removed and set into its specific calling functions
-    const boardNL = document.querySelectorAll('.boardSlot');
-    // Updates the gameBoard[] with the currently populated gameBoard divs
-    const updateGameBoard = (args) => {
-        const _boardTempList = [];
-        for(var i = boardNL.length; i--; _boardTempList.unshift(boardNL[i].innerText));
-        _gameBoard = _boardTempList;
     }
 
 
     return {
         setGameBoard,
-        getGameBoard,
+        getInfo,
         updateGameBoard,
-
+        
     }
 
 })();
@@ -49,16 +58,39 @@ const gameBoard = (() => {
 const displayController = (() => {
 
     const _boardContainer = document.querySelector('.boardContainer');
-    
-    const boardNL = document.querySelectorAll('.boardSlot');
+    const _boardNL = document.querySelectorAll('.boardSlot');
     
     const _boardList = [];
-    for(var i = boardNL.length; i--; _boardList.unshift(boardNL[i]));
+    for(var i = _boardNL.length; i--; _boardList.unshift(_boardNL[i]));
 
+        // The following is an init line that creates a JS reference to boardContainer's visible styling
     let _currDisplay;
-    // The following is an init line that creates a JS reference to boardContainer's visible styling
     if (_boardContainer.style.display === "") _currDisplay = "grid";
 
+    // updateDOMBoard takes an incoming gameBoard [] and passes it to the _boardList, updating _boardList's innerText to match the incomingBoard's state
+    const updateDOMBoard = (incomingBoard) => {
+
+        for( let i = 0; i < _boardList.length; i++) {
+            _boardList[i].innerText = incomingBoard[i];
+        }
+
+        return true;
+    }
+
+    // Clear board sets the current _boardList's innerText of all elements to an empty string, while creating a tempBoard array of empty strings to pass back to _gameBoard object. 
+    const clearBoard = () => {
+        
+        let tempBoard = [];
+
+        _boardList.forEach( e => {
+            e.innerText = "";
+            tempBoard.push(e.innerText);
+        })
+
+        gameBoard.setGameBoard(tempBoard);
+    }
+
+    // Cycle board is simply a fun animation that runs before doing clearBoard()
     const cycleBoard = () => {
 
         let iter = 0;
@@ -88,15 +120,12 @@ const displayController = (() => {
             }
         }, 70);
 
+        clearBoard();
+
     }
 
-    const clearBoard = () => {
-        _boardList.forEach( e => {
-            e.innerText = "";
-        })
-        gameBoard.updateGameBoard();
-    }
-
+    // randomizedBoard generates a random 'legal length' board state and passes it to the _boardList. When paired with setInterval, this function creates a fun animation that cycles random board states while the application is idling
+        // XXXUPDATEXXX Make sure when this function is finished cycling on setInterval that clearBoard() is called correctly to re-pair the DOM to the empty _gameBoard[].
     const randomizedBoard = () => {
 
         clearBoard();
@@ -128,10 +157,14 @@ const displayController = (() => {
 
         // To call randomizedBoard
         // let intervalID = setInterval(displayController.randomizedBoard, 750);
-        // clearInter(intervalID); // Ends the randomized cycling
+         // To end the randomized cycling
+        // clearInter(intervalID);
+        // displayController.clearBoard() // Be sure to call this to reinstantiate empty gameBoard and DOM
+        
 
     }
 
+    // Toggles the visibility of the DOM's gameBoard.
     const toggleGameBoard = () => {
         if (_currDisplay === "grid") {
             _boardContainer.style.display = "none";
@@ -142,6 +175,7 @@ const displayController = (() => {
         }
     }
 
+    // Getter function that returns current private variables for reference
     const getInfo = () => {
         console.log(_boardContainer);
         console.log(_boardList);
@@ -151,6 +185,8 @@ const displayController = (() => {
 
     return {
         getInfo,
+        updateDOMBoard,
+
         toggleGameBoard,
         clearBoard,
         cycleBoard,
