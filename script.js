@@ -14,10 +14,6 @@ const gameBoard = (() => {
 
     let _gameBoard = ["", "", "", "", "", "", "", "", ""];
 
-    // Sets the current _gameBoard based off incomingBoard array
-    const setGameBoard = (incomingBoard) => {
-        _gameBoard = incomingBoard;
-    }
 
     // Returns current gameBoard
     const getInfo = () => {
@@ -48,7 +44,6 @@ const gameBoard = (() => {
 
 
     return {
-        setGameBoard,
         getInfo,
         updateGameBoard,
         
