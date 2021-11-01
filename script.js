@@ -24,6 +24,7 @@ const gameBoard = (() => {
         return _gameBoard;
     }
 
+    // updateGameBoard takes the index of _gameBoard to be updated, and a new incomingValue, type checks index and incomingValue to be legal moves, then passes them into _gameBoard before updating the displayController.
     const updateGameBoard = (index, incomingValue) => {
         
         if(index > 8 || index < 0) {
@@ -77,17 +78,19 @@ const displayController = (() => {
         return true;
     }
 
-    // Clear board sets the current _boardList's innerText of all elements to an empty string, while creating a tempBoard array of empty strings to pass back to _gameBoard object. 
+    // Clear board sets the current _boardList's innerText of all elements to an empty string, while updating each point of _gameBoard to match the empty  string
     const clearBoard = () => {
         
         let tempBoard = [];
 
+        let i = 0;
+
         _boardList.forEach( e => {
             e.innerText = "";
-            tempBoard.push(e.innerText);
+            gameBoard.updateGameBoard(i, "");
+            i++;
         })
 
-        gameBoard.setGameBoard(tempBoard);
     }
 
     // Cycle board is simply a fun animation that runs before doing clearBoard()
