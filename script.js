@@ -197,16 +197,17 @@ const displayController = (() => {
 const initMenu = (() => {
 
     let _menuReference;
-    let _menuButtonReference;
     let _initMenuActive = false;
     let _intervalID;
+    const _container = document.querySelector('.container');;
 
     const getInfo = () => {
         console.log(`I am initMenu! I run at the beginning of the application to start the menu which drives the initial setup before gameplay occurs.`)
         console.log(`My current states are: 
         _menuReference: ${_menuReference}
         _initMenuActive: ${_initMenuActive}
-        _intervalID: ${_intervalID}`);
+        _intervalID: ${_intervalID}
+        _container: ${_container}`);
 
 
 
@@ -216,8 +217,6 @@ const initMenu = (() => {
     const generateInitMenu = () => {
         
         displayController.clearBoard();
-
-        const _container = document.querySelector(".container");
 
         const menuContainer = document.createElement('div');
         _menuReference = menuContainer;
@@ -231,6 +230,7 @@ const initMenu = (() => {
         menuButton.classList.add('menuButton');
         _menuButtonReference = menuButton;
         menuButton.innerText = "Tic-Tac-Taco";
+        menuButton.setAttribute("onclick", "initMenu.playersMenu();");
 
         const menuButton1 = document.createElement('button');
         menuButton1.classList.add('menuButton');
@@ -248,7 +248,6 @@ const initMenu = (() => {
         menuButton3.setAttribute("onclick", "initMenu.visitWarGames();");
 
 
-
         menuDiv.appendChild(menuButton);
         menuDiv.innerHTML += "<br>";
         menuDiv.appendChild(menuButton1);
@@ -256,14 +255,6 @@ const initMenu = (() => {
         menuDiv.appendChild(menuButton2);
         menuDiv.innerHTML += "<br>";
         menuDiv.appendChild(menuButton3);
-
-        
-
-        // const 
-
-
-        // Tic-Tac-Toe, Chess, checkers, backgammon, poker, Theaterwide Biotoxic and Chemical Warfare, Global Thermonuclear War,
-
 
 
         menuContainer.appendChild(menuDiv);
@@ -280,10 +271,10 @@ const initMenu = (() => {
             } else {
                 displayController.randomizedBoard()
             }
-        }, 750);
+        }, 500);
 
-        console.log('generateInitMenu has successfully been completed - initMenu has been created!')
-        return true;
+        console.log('generateInitMenu has been completed');
+        return 'generateInitMenu has successfully been completed - initMenu has been created!';
     }
 
     const toggleInitMenuActive = () => {
@@ -304,9 +295,62 @@ const initMenu = (() => {
         window.location = `https://github.com/dominicroemer`;
     }
 
-    // const visitPortfolio = () => {
-    //     window.location='google.com';
-    // }
+    const playersMenu = () => {
+
+        let _parentReference = _menuReference.parentNode;
+        _parentReference.removeChild(_menuReference);
+
+        const playersContainer = document.createElement('div');
+        _menuReference = playersContainer;
+        playersContainer.classList.add('playersContainer');
+        const playersDiv = document.createElement('playersDiv');
+        playersDiv.classList.add('playersDiv');
+        playersDiv.innerHTML = `One or two players? <br>`
+        playersDiv.innerHTML += `Please select number of players:`
+
+        const menuButton = document.createElement('button');
+        menuButton.classList.add('menuButton');
+        _menuButtonReference = menuButton;
+        menuButton.innerText = "1 (vs AI)";
+        menuButton.setAttribute("onclick", "initMenu.onePlayerGame();");
+
+        const menuButton1 = document.createElement('button');
+        menuButton1.classList.add('menuButton');
+        menuButton1.innerText = "2 (Player vs Player)";
+        menuButton1.setAttribute("onclick", "initMenu.twoPlayerGame();");
+        
+        const menuButton2 = document.createElement('button');
+        menuButton2.classList.add('menuButton');
+        menuButton2.innerText = "0 (AI vs AI)";
+        menuButton2.setAttribute("onclick", "initMenu.visitEndgame();");
+
+        _container.appendChild(playersContainer);
+        playersContainer.appendChild(playersDiv);
+
+        playersDiv.appendChild(menuButton);
+        playersDiv.innerHTML += "<br>";
+        playersDiv.appendChild(menuButton1);
+        playersDiv.innerHTML += "<br>";
+        playersDiv.appendChild(menuButton2);
+        
+
+        // console.log('here');
+        return "You've made it to the playersMenu";
+    }
+
+    const visitEndgame = () => {
+        console.log("An interesting move...");
+        setTimeout( () => {window.location = `https://www.youtube.com/watch?v=s93KC4AGKnY&ab_channel=Techno947`;}, 2500);
+    }
+
+
+    const onePlayerGame = () => {
+        console.log(`You've reached the logic to start a 1 player game!`);
+    }
+
+    const twoPlayerGame = () => {
+        console.log(`You've reached the logic to start a 2 player game!`)
+    }
 
 
     return {
@@ -315,9 +359,10 @@ const initMenu = (() => {
         toggleInitMenuActive,
         visitWarGames,
         visitPortfolio,
-
-
-
+        visitEndgame,
+        playersMenu,
+        onePlayerGame,
+        twoPlayerGame,
     }
 })();
 
@@ -327,6 +372,8 @@ init();
 function init() {
 
     // let intervalID = setInterval(displayController.randomizedBoard, 1000);
+
+    initMenu.generateInitMenu();
 
     console.log("Init has completed successfully");
     return;
