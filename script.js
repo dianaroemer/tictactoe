@@ -57,7 +57,7 @@ const displayController = (() => {
     const _boardNL = document.querySelectorAll('.boardSlot');
     
     const _boardList = [];
-    for(var i = _boardNL.length; i--; _boardList.unshift(_boardNL[i]));
+    for(let i = _boardNL.length; i--; _boardList.unshift(_boardNL[i]));
 
         // The following is an init line that creates a JS reference to boardContainer's visible styling
     let _currDisplay;
@@ -193,6 +193,133 @@ const displayController = (() => {
 
 })();
 
+
+const initMenu = (() => {
+
+    let _menuReference;
+    let _menuButtonReference;
+    let _initMenuActive = false;
+    let _intervalID;
+
+    const getInfo = () => {
+        console.log(`I am initMenu! I run at the beginning of the application to start the menu which drives the initial setup before gameplay occurs.`)
+        console.log(`My current states are: 
+        _menuReference: ${_menuReference}
+        _initMenuActive: ${_initMenuActive}
+        _intervalID: ${_intervalID}`);
+
+
+
+    }
+
+    // In a perfect world, any objects or DOM elements that run out of initMenu are passed to the displayController - but that's a paradigm for me to practice and learn on my next project, rather than on this one. Refactoring ain't great.
+    const generateInitMenu = () => {
+        
+        displayController.clearBoard();
+
+        const _container = document.querySelector(".container");
+
+        const menuContainer = document.createElement('div');
+        _menuReference = menuContainer;
+        menuContainer.classList.add('menuContainer');
+        const menuDiv = document.createElement('div');
+        menuDiv.classList.add('menuDiv');
+        menuDiv.innerHTML = `Greetings Professor Falken. <br>`
+        menuDiv.innerHTML += `Shall we play a game? <br>`
+
+        const menuButton = document.createElement('button');
+        menuButton.classList.add('menuButton');
+        _menuButtonReference = menuButton;
+        menuButton.innerText = "Tic-Tac-Taco";
+
+        const menuButton1 = document.createElement('button');
+        menuButton1.classList.add('menuButton');
+        menuButton1.innerText = "Chess";
+        menuButton1.setAttribute("onclick", "initMenu.visitPortfolio();");
+        
+        const menuButton2 = document.createElement('button');
+        menuButton2.classList.add('menuButton');
+        menuButton2.innerText = "Checkers";
+        menuButton2.setAttribute("onclick", "initMenu.visitPortfolio();");
+
+        const menuButton3 = document.createElement('button');
+        menuButton3.classList.add('menuButton');
+        menuButton3.innerText = "Global Thermonuclear War";
+        menuButton3.setAttribute("onclick", "initMenu.visitWarGames();");
+
+
+
+        menuDiv.appendChild(menuButton);
+        menuDiv.innerHTML += "<br>";
+        menuDiv.appendChild(menuButton1);
+        menuDiv.innerHTML += "<br>";
+        menuDiv.appendChild(menuButton2);
+        menuDiv.innerHTML += "<br>";
+        menuDiv.appendChild(menuButton3);
+
+        
+
+        // const 
+
+
+        // Tic-Tac-Toe, Chess, checkers, backgammon, poker, Theaterwide Biotoxic and Chemical Warfare, Global Thermonuclear War,
+
+
+
+        menuContainer.appendChild(menuDiv);
+        _container.appendChild(menuContainer);
+
+        
+        toggleInitMenuActive();
+
+        _intervalID = setInterval( () => {
+            if (!_initMenuActive) {
+                displayController.cycleBoard();
+                toggleInitMenuActive();
+                clearInterval(_intervalID);
+            } else {
+                displayController.randomizedBoard()
+            }
+        }, 750);
+
+        console.log('generateInitMenu has successfully been completed - initMenu has been created!')
+        return true;
+    }
+
+    const toggleInitMenuActive = () => {
+
+        if(_initMenuActive) {
+            _initMenuActive = false;
+        } else {
+            _initMenuActive = true;
+        }
+
+    }
+
+    const visitWarGames = () => {
+        window.location = `https://www.youtube.com/watch?v=KXzNo0vR_dU&ab_channel=Movieclips`;
+    }
+
+    const visitPortfolio = () => {
+        window.location = `https://github.com/dominicroemer`;
+    }
+
+    // const visitPortfolio = () => {
+    //     window.location='google.com';
+    // }
+
+
+    return {
+        getInfo,
+        generateInitMenu,
+        toggleInitMenuActive,
+        visitWarGames,
+        visitPortfolio,
+
+
+
+    }
+})();
 
 
 init();
