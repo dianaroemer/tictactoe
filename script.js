@@ -287,14 +287,6 @@ const initMenu = (() => {
 
     }
 
-    const visitWarGames = () => {
-        window.location = `https://www.youtube.com/watch?v=KXzNo0vR_dU&ab_channel=Movieclips`;
-    }
-
-    const visitPortfolio = () => {
-        window.location = `https://github.com/dominicroemer`;
-    }
-
     const playersMenu = () => {
 
         let _parentReference = _menuReference.parentNode;
@@ -338,19 +330,36 @@ const initMenu = (() => {
         return "You've made it to the playersMenu";
     }
 
+    const onePlayerGame = () => {
+
+        let _parentReference = _menuReference.parentNode;
+        _parentReference.removeChild(_menuReference);
+
+        console.log(`You've reached the logic to start a 1 player game!`);
+
+    }
+
+    const twoPlayerGame = () => {
+
+        let _parentReference = _menuReference.parentNode;
+        _parentReference.removeChild(_menuReference);
+
+        console.log(`You've reached the logic to start a 2 player game!`)
+    }
+
+    const visitWarGames = () => {
+        window.location = `https://www.youtube.com/watch?v=KXzNo0vR_dU&ab_channel=Movieclips`;
+    }
+
+    const visitPortfolio = () => {
+        window.location = `https://github.com/dominicroemer`;
+    }
+
     const visitEndgame = () => {
         console.log("An interesting move...");
         setTimeout( () => {window.location = `https://www.youtube.com/watch?v=s93KC4AGKnY&ab_channel=Techno947`;}, 2500);
     }
 
-
-    const onePlayerGame = () => {
-        console.log(`You've reached the logic to start a 1 player game!`);
-    }
-
-    const twoPlayerGame = () => {
-        console.log(`You've reached the logic to start a 2 player game!`)
-    }
 
 
     return {
