@@ -42,11 +42,17 @@ const gameBoard = (() => {
 
     }
 
+    const resetGameBoard = () => {
+        for (let i = 0; i < 9; i++) {
+            updateGameBoard(i, "");
+        }
+    }
+
 
     return {
         getInfo,
         updateGameBoard,
-        
+        resetGameBoard,        
     }
 
 })();
@@ -344,6 +350,11 @@ const initMenu = (() => {
         let _parentReference = _menuReference.parentNode;
         _parentReference.removeChild(_menuReference);
 
+        clearInterval(_intervalID);
+        displayController.cycleBoard();
+
+        gameEngine.getInfo();
+
         console.log(`You've reached the logic to start a 2 player game!`)
     }
 
@@ -375,6 +386,59 @@ const initMenu = (() => {
     }
 })();
 
+const gameEngine = (() => {
+
+    let _turnCounter = 0;
+    let playingGame = false;
+
+
+    const getInfo = () => {
+
+        console.log(`I am gameEngine.getInfo, this is my information
+        _turnCounter: ${_turnCounter}
+        playingGame: ${playingGame}`);
+
+    }
+
+    const gameRound = () => {
+
+        // Init gameBoard
+            // Set gameBoard to default state
+            // Clear DOM
+        // Player 1 Takes turn
+
+
+
+    }
+
+    const _playTurn = () => {
+        if( _turnCounter < 9) _turnCounter++;
+    }
+
+    const _resetTurns = () => {
+        _turnCounter = 0;
+    }
+
+    const togglePlayingGame = () => {
+        if (playingGame) {
+            playingGame = false;
+        } else {
+            playingGame = true;
+        }
+    }
+
+    const isPlayingGame = () => {
+        return playingGame;
+    }
+
+    return {
+        getInfo,
+        isPlayingGame,
+        togglePlayingGame,
+
+    }
+
+})();
 
 init();
 
