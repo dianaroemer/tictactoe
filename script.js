@@ -386,18 +386,68 @@ const initMenu = (() => {
     }
 })();
 
+const Player = (playerName, playerInput) => {
+
+    let name = "Player 1";
+    let input = "X"
+
+    const getInfo = () => {
+        return `I am a Player object, my information is as follows
+        name: ${name}
+        input: ${input}`
+    }
+
+    const getName = () => {
+        return name;
+    }
+
+    const setName = (newName) => {
+        if ((typeof newName) == "string") {
+            name = newName;
+        }
+    }
+
+    const getInput = () => {
+        return input;
+    }
+
+    const setInput = (newInput) => {
+        if( newInput === "X" || newInput == "O") {
+            input = newInput;
+        }
+    }
+
+    setName(playerName);
+    setInput(playerInput);
+
+    
+    return {
+        getInfo,
+        getName,
+        setName,
+        getInput,
+        setInput,
+
+
+
+    }
+}
+
 const gameEngine = (() => {
 
     let _turnCounter = 0;
     let playingGame = false;
-
+    const playerOne = Player("Player 1", "X");
+    const playerTwo = Player("Player 2", "O");
 
     const getInfo = () => {
 
         console.log(`I am gameEngine.getInfo, this is my information
         _turnCounter: ${_turnCounter}
-        playingGame: ${playingGame}`);
-
+        playingGame: ${playingGame} 
+        playerOne: ${playerOne.getInfo()}
+        playerTwo: ${playerTwo.getInfo()}`);
+  
     }
 
     const gameRound = () => {
@@ -407,19 +457,37 @@ const gameEngine = (() => {
             // Clear DOM
         // Player 1 Takes turn
 
-
-
     }
 
     const _playTurn = () => {
         if( _turnCounter < 9) _turnCounter++;
     }
 
+    const playRound = (position) => {
+        // Check if move is legal
+        if (!_isMoveLegal(position)) {
+            return false; // Selected position is an illegal move! 
+        }
+
+        // Get player input from current player 
+
+
+    }
+
+    const _isMoveLegal = (position) => {
+        let gameBoard = gameBoard.getInfo();
+        if (gameBoard[position] == "X" || gameBoard[position] == "O") {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     const _resetTurns = () => {
         _turnCounter = 0;
     }
 
-    const togglePlayingGame = () => {
+    const _togglePlayingGame = () => {
         if (playingGame) {
             playingGame = false;
         } else {
@@ -431,10 +499,14 @@ const gameEngine = (() => {
         return playingGame;
     }
 
+    
+
     return {
         getInfo,
         isPlayingGame,
-        togglePlayingGame,
+        playRound,
+
+        
 
     }
 
