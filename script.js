@@ -105,14 +105,12 @@ const Player = (playerName, playerInput) => {
 }
 
 const gameEngine = (() => {
-
     let _turnCounter = 0;
     let playingGame = false;
     const playerOne = Player("Player 1", "X");
     const playerTwo = Player("Player 2", "O");
 
     const getInfo = () => {
-
         console.log(`I am gameEngine.getInfo, this is my information
         _turnCounter: ${_turnCounter}
         playingGame: ${playingGame} 
@@ -122,18 +120,12 @@ const gameEngine = (() => {
     }
 
     const startGame = () => {
-
         _resetTurns();
         _togglePlayingGame();
 
     }
 
-
-
- 
     const playRound = (position) => {
-
-        
         // Check if playing an active game
         if(!playingGame) {
             console.log(`Error thrown by playRound!
@@ -165,8 +157,6 @@ const gameEngine = (() => {
         }
 
         _turnCounter++;
-
-
 
         console.log('You have completed a runtime of playRound');
     }
@@ -595,8 +585,8 @@ const initMenu = (() => {
         clearInterval(_intervalID);
         displayController.cycleBoard();
 
-        // gameEngine.getInfo();
-        gameEngine.startGame();
+        // This is init function for gameEngine, the setTimeout coincides with the delay created by displayController.cycleBoard()
+        setTimeout(gameEngine.startGame, 1600);
 
         console.log(`You've reached the logic to start a 2 player game!`)
     }
