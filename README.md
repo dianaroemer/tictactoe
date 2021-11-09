@@ -1,10 +1,18 @@
 # tictactoe
 A simple TicTacToe game using factory functions and modules to practice privacy 
 
-LINK TO LIVE PAGE - 
+LINK TO LIVE PAGE - https://dominicroemer.github.io/tictactoe
 
 
 ToDo:
+Add Player Name menu before starting 2 player game
+Add winCondition and game termination functionality to _checkWinCondition
+
+Add basic AI 
+Add Hard AI
+Add perfect AI
+
+
 
 
 

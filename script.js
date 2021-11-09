@@ -588,7 +588,7 @@ const initMenu = (() => {
         // This is init function for gameEngine, the setTimeout coincides with the delay created by displayController.cycleBoard()
         setTimeout(gameEngine.startGame, 1600);
 
-        console.log(`You've reached the logic to start a 2 player game!`)
+        // console.log(`You've reached the logic to start a 2 player game!`)
     }
 
     const visitWarGames = () => {
