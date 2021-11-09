@@ -57,6 +57,241 @@ const gameBoard = (() => {
 
 })();
 
+const Player = (playerName, playerInput) => {
+
+    let name = "Player 1";
+    let input = "X"
+
+    const getInfo = () => {
+        return `I am a Player object, my information is as follows
+        name: ${name}
+        input: ${input}`
+    }
+
+    const getName = () => {
+        return name;
+    }
+
+    const setName = (newName) => {
+        if ((typeof newName) == "string") {
+            name = newName;
+        }
+    }
+
+    const getInput = () => {
+        return input;
+    }
+
+    const setInput = (newInput) => {
+        if( newInput === "X" || newInput == "O") {
+            input = newInput;
+        }
+    }
+
+    setName(playerName);
+    setInput(playerInput);
+
+    
+    return {
+        getInfo,
+        getName,
+        setName,
+        getInput,
+        setInput,
+
+
+
+    }
+}
+
+const gameEngine = (() => {
+
+    let _turnCounter = 0;
+    let playingGame = false;
+    const playerOne = Player("Player 1", "X");
+    const playerTwo = Player("Player 2", "O");
+
+    const getInfo = () => {
+
+        console.log(`I am gameEngine.getInfo, this is my information
+        _turnCounter: ${_turnCounter}
+        playingGame: ${playingGame} 
+        playerOne: ${playerOne.getInfo()}
+        playerTwo: ${playerTwo.getInfo()}`);
+  
+    }
+
+    const startGame = () => {
+
+        _resetTurns();
+        _togglePlayingGame();
+
+    }
+
+
+
+ 
+    const playRound = (position) => {
+
+        
+        // Check if playing an active game
+        if(!playingGame) {
+            console.log(`Error thrown by playRound!
+            playinGame: ${playingGame}`);
+            return `Not playing active game! Error thrown by playRound`
+        }
+
+        if( _turnCounter >= 9 ) {
+            console.log(`Reached maximum number of turns! Turn is invalid! 
+            _turnCounter: ${_turnCounter}
+            
+            Does that mean this game is a draw? Is there a place to put this so it triggers on round 9's input? `);
+            return false;
+        }
+
+        // Check if move is legal
+        if (!_isMoveLegal(position)) {
+            return false; // Selected position is an illegal move! 
+        }
+
+        if (_turnCounter % 2 == 0) {
+            gameBoard.updateGameBoard(position, "X");
+        } else {
+            gameBoard.updateGameBoard(position, "O");
+        }
+        
+        if(_turnCounter >= 4) {
+            _checkWinCondition();
+        }
+
+        _turnCounter++;
+
+
+
+        console.log('You have completed a runtime of playRound');
+    }
+
+    const _isMoveLegal = (position) => {
+        let tempGameBoard = gameBoard.getInfo();
+        if (tempGameBoard[position] == "X" || tempGameBoard[position] == "O") {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    const _resetTurns = () => {
+        _turnCounter = 0;
+    }
+
+    const _togglePlayingGame = () => {
+        if (playingGame) {
+            playingGame = false;
+        } else {
+            playingGame = true;
+        }
+    }
+
+    const isPlayingGame = () => {
+        return playingGame;
+    }
+
+    const _checkWinCondition = () => {
+
+        console.log("I am checking if a win condition has been reached");
+
+        const winBoard = gameBoard.getInfo();
+        let keyPiece;
+
+        // Vertical Winning positions 
+        /* 
+        X | O | O     O | X | O     O | O | x     
+        X | O | O     O | X | O     O | O | X     
+        X | O | O     O | X | O     O | O | X     
+        */
+        keyPiece = winBoard[0];
+        if(keyPiece !== "") {
+            if( winBoard[3] === keyPiece && winBoard[6] === keyPiece) {
+                console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a vertical winning position, slots 0,3,6`)
+            }
+        }
+        keyPiece = winBoard[1];
+        if(keyPiece !== "") {
+            if( winBoard[4] === keyPiece && winBoard[7] === keyPiece) {
+                console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a vertical winning position, slots 1,4,7`)
+            }
+        }
+        keyPiece = winBoard[2];
+        if(keyPiece !== "") {
+            if( winBoard[5] === keyPiece && winBoard[8] === keyPiece) {
+                console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a vertical winning position, slots 2,5,8`)
+            }
+        }
+
+        // Horizontal Winning positions 
+        /* 
+        X | X | X     O | O | O     O | O | O     
+        O | O | O     X | X | X     O | O | O     
+        O | O | O     O | O | O     X | X | X     
+        */
+        keyPiece = winBoard[0];
+        if(keyPiece !== "") {
+            if( winBoard[1] === keyPiece && winBoard[2] === keyPiece) {
+                console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Horizontal winning position, slots 0,1,2`)
+            }
+        }
+        keyPiece = winBoard[3];
+        if(keyPiece !== "") {
+            if( winBoard[4] === keyPiece && winBoard[5] === keyPiece) {
+                console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Horizontal winning position, slots 3,4,5`)
+            }
+        }
+        keyPiece = winBoard[6];
+        if(keyPiece !== "") {
+            if( winBoard[7] === keyPiece && winBoard[8] === keyPiece) {
+                console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Horizontal winning position, slots 6,7,8`)
+            }
+        }
+
+        // Diagonal Winning Positions
+        /* 
+        X | O | O     O | O | X     
+        O | X | O     O | X | O     
+        O | O | X     X | O | O    
+        */
+        keyPiece = winBoard[0];
+        if(keyPiece !== "") {
+            if( winBoard[4] === keyPiece && winBoard[8] === keyPiece) {
+                console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Diagonal winning position, slots 0,4,8`)
+            }
+        }
+        keyPiece = winBoard[2];
+        if(keyPiece !== "") {
+            if( winBoard[4] === keyPiece && winBoard[6] === keyPiece) {
+                console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Diagonal winning position, slots 2,4,6`)
+            }
+        }
+
+
+
+
+
+        console.log("_checkWinCondition() has completed its runtime");
+
+    };
+    
+
+    return {
+        getInfo,
+        isPlayingGame,
+        playRound,
+        startGame,
+
+
+    }
+
+})();
+
 const displayController = (() => {
 
     const _boardContainer = document.querySelector('.boardContainer');
@@ -185,6 +420,13 @@ const displayController = (() => {
         console.log(_boardList);
     }
 
+    _boardNL.forEach(element => {
+        element.addEventListener('click', () => {
+            // console.log('you have clicked a div')
+            // console.log(`You have clicked this ${element.dataset.position}`)
+            gameEngine.playRound(element.dataset.position);
+        })
+    });
 
 
     return {
@@ -353,7 +595,8 @@ const initMenu = (() => {
         clearInterval(_intervalID);
         displayController.cycleBoard();
 
-        gameEngine.getInfo();
+        // gameEngine.getInfo();
+        gameEngine.startGame();
 
         console.log(`You've reached the logic to start a 2 player game!`)
     }
@@ -386,131 +629,7 @@ const initMenu = (() => {
     }
 })();
 
-const Player = (playerName, playerInput) => {
 
-    let name = "Player 1";
-    let input = "X"
-
-    const getInfo = () => {
-        return `I am a Player object, my information is as follows
-        name: ${name}
-        input: ${input}`
-    }
-
-    const getName = () => {
-        return name;
-    }
-
-    const setName = (newName) => {
-        if ((typeof newName) == "string") {
-            name = newName;
-        }
-    }
-
-    const getInput = () => {
-        return input;
-    }
-
-    const setInput = (newInput) => {
-        if( newInput === "X" || newInput == "O") {
-            input = newInput;
-        }
-    }
-
-    setName(playerName);
-    setInput(playerInput);
-
-    
-    return {
-        getInfo,
-        getName,
-        setName,
-        getInput,
-        setInput,
-
-
-
-    }
-}
-
-const gameEngine = (() => {
-
-    let _turnCounter = 0;
-    let playingGame = false;
-    const playerOne = Player("Player 1", "X");
-    const playerTwo = Player("Player 2", "O");
-
-    const getInfo = () => {
-
-        console.log(`I am gameEngine.getInfo, this is my information
-        _turnCounter: ${_turnCounter}
-        playingGame: ${playingGame} 
-        playerOne: ${playerOne.getInfo()}
-        playerTwo: ${playerTwo.getInfo()}`);
-  
-    }
-
-    const gameRound = () => {
-
-        // Init gameBoard
-            // Set gameBoard to default state
-            // Clear DOM
-        // Player 1 Takes turn
-
-    }
-
-    const _playTurn = () => {
-        if( _turnCounter < 9) _turnCounter++;
-    }
-
-    const playRound = (position) => {
-        // Check if move is legal
-        if (!_isMoveLegal(position)) {
-            return false; // Selected position is an illegal move! 
-        }
-
-        // Get player input from current player 
-
-
-    }
-
-    const _isMoveLegal = (position) => {
-        let gameBoard = gameBoard.getInfo();
-        if (gameBoard[position] == "X" || gameBoard[position] == "O") {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    const _resetTurns = () => {
-        _turnCounter = 0;
-    }
-
-    const _togglePlayingGame = () => {
-        if (playingGame) {
-            playingGame = false;
-        } else {
-            playingGame = true;
-        }
-    }
-
-    const isPlayingGame = () => {
-        return playingGame;
-    }
-
-    
-
-    return {
-        getInfo,
-        isPlayingGame,
-        playRound,
-
-        
-
-    }
-
-})();
 
 init();
 
