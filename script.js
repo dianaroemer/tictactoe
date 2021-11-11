@@ -158,7 +158,7 @@ const gameEngine = (() => {
 
         _turnCounter++;
 
-        console.log('You have completed a runtime of playRound');
+        // console.log('You have completed a runtime of playRound');
     }
 
     const _isMoveLegal = (position) => {
@@ -188,7 +188,7 @@ const gameEngine = (() => {
 
     const _checkWinCondition = () => {
 
-        console.log("I am checking if a win condition has been reached");
+        // console.log("I am checking if a win condition has been reached");
 
         const winBoard = gameBoard.getInfo();
         let keyPiece;
@@ -202,19 +202,22 @@ const gameEngine = (() => {
         keyPiece = winBoard[0];
         if(keyPiece !== "") {
             if( winBoard[3] === keyPiece && winBoard[6] === keyPiece) {
-                console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a vertical winning position, slots 0,3,6`)
+                // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a vertical winning position, slots 0,3,6`)
+                _endGameWinner(0, 3, 6, keyPiece);
             }
         }
         keyPiece = winBoard[1];
         if(keyPiece !== "") {
             if( winBoard[4] === keyPiece && winBoard[7] === keyPiece) {
-                console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a vertical winning position, slots 1,4,7`)
+                // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a vertical winning position, slots 1,4,7`)
+                _endGameWinner(1, 4, 7, keyPiece);
             }
         }
         keyPiece = winBoard[2];
         if(keyPiece !== "") {
             if( winBoard[5] === keyPiece && winBoard[8] === keyPiece) {
-                console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a vertical winning position, slots 2,5,8`)
+                // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a vertical winning position, slots 2,5,8`)
+                _endGameWinner(2, 5, 8, keyPiece);
             }
         }
 
@@ -227,19 +230,23 @@ const gameEngine = (() => {
         keyPiece = winBoard[0];
         if(keyPiece !== "") {
             if( winBoard[1] === keyPiece && winBoard[2] === keyPiece) {
-                console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Horizontal winning position, slots 0,1,2`)
+                // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Horizontal winning position, slots 0,1,2`)
+                _endGameWinner(0, 1, 2, keyPiece);
             }
         }
         keyPiece = winBoard[3];
         if(keyPiece !== "") {
             if( winBoard[4] === keyPiece && winBoard[5] === keyPiece) {
-                console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Horizontal winning position, slots 3,4,5`)
+                // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Horizontal winning position, slots 3,4,5`)
+                _endGameWinner(3, 4, 5, keyPiece);
             }
         }
         keyPiece = winBoard[6];
         if(keyPiece !== "") {
             if( winBoard[7] === keyPiece && winBoard[8] === keyPiece) {
-                console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Horizontal winning position, slots 6,7,8`)
+                // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Horizontal winning position, slots 6,7,8`)
+                _endGameWinner(6, 7, 8, keyPiece);
+
             }
         }
 
@@ -252,23 +259,53 @@ const gameEngine = (() => {
         keyPiece = winBoard[0];
         if(keyPiece !== "") {
             if( winBoard[4] === keyPiece && winBoard[8] === keyPiece) {
-                console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Diagonal winning position, slots 0,4,8`)
+                // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Diagonal winning position, slots 0,4,8`)
+                _endGameWinner(0, 4, 8, keyPiece);
             }
         }
         keyPiece = winBoard[2];
         if(keyPiece !== "") {
             if( winBoard[4] === keyPiece && winBoard[6] === keyPiece) {
-                console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Diagonal winning position, slots 2,4,6`)
+                // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Diagonal winning position, slots 2,4,6`)
+                _endGameWinner(2, 4, 6, keyPiece);
             }
         }
 
 
-
-
-
-        console.log("_checkWinCondition() has completed its runtime");
+        // console.log("_checkWinCondition() has completed its runtime");
 
     };
+
+    const _endGameWinner = (pos1, pos2, pos3, winningPiece) => {
+
+        const tempPlayers = _getPlayers();
+        let winningPlayer;
+
+        // Doing winningPiece conversion to determine which player owns the piece that won the game
+        if( tempPlayers[0].getInput() === winningPiece ) {
+            winningPlayer = tempPlayers[0].getName();
+        } else {
+            winningPlayer = tempPlayers[1].getName();
+        }
+
+        /* console.log(`WIN Condition has been found! ${winningPiece} is the winner
+        in slots:
+        ${pos1}
+        ${pos2}
+        ${pos3}
+        and the winning player is ${winningPlayer}`); */
+        
+
+        displayController.createWinnerMenu(pos1, pos2, pos3, winningPlayer);
+
+        _togglePlayingGame();
+
+
+    }
+
+    const _getPlayers = () => {
+        return [ playerOne, playerTwo ];
+    }
     
 
     return {
@@ -276,7 +313,6 @@ const gameEngine = (() => {
         isPlayingGame,
         playRound,
         startGame,
-
 
     }
 
@@ -410,6 +446,17 @@ const displayController = (() => {
         console.log(_boardList);
     }
 
+    const createWinnerMenu = (pos1, pos2, pos3, winner) => {
+
+        // Generate tacos
+        _boardList[pos1].innerHTML = `<img src="media/taco.png" alt="A photo of a taco" class="taco">`;
+        _boardList[pos2].innerHTML = `<img src="media/taco.png" alt="A photo of a taco" class="taco">`;
+        _boardList[pos3].innerHTML = `<img src="media/taco.png" alt="A photo of a taco" class="taco">`;
+
+        initMenu.generateWinnerMenu(winner);
+
+    }
+
     _boardNL.forEach(element => {
         element.addEventListener('click', () => {
             // console.log('you have clicked a div')
@@ -417,7 +464,6 @@ const displayController = (() => {
             gameEngine.playRound(element.dataset.position);
         })
     });
-
 
     return {
         getInfo,
@@ -427,6 +473,8 @@ const displayController = (() => {
         clearBoard,
         cycleBoard,
         randomizedBoard,
+        createWinnerMenu,
+
     };
 
 })();
@@ -454,7 +502,9 @@ const initMenu = (() => {
     // In a perfect world, any objects or DOM elements that run out of initMenu are passed to the displayController - but that's a paradigm for me to practice and learn on my next project, rather than on this one. Refactoring ain't great.
     const generateInitMenu = () => {
         
-        displayController.clearBoard();
+        // displayController.clearBoard();
+        gameBoard.resetGameBoard();
+        // _intervalID = setInterval(displayController.randomizedBoard, )
 
         const menuContainer = document.createElement('div');
         _menuReference = menuContainer;
@@ -580,7 +630,11 @@ const initMenu = (() => {
     const twoPlayerGame = () => {
 
         let _parentReference = _menuReference.parentNode;
-        _parentReference.removeChild(_menuReference);
+        if (_menuReference) {
+            _parentReference.removeChild(_menuReference);
+        }
+
+        toggleInitMenuActive();
 
         clearInterval(_intervalID);
         displayController.cycleBoard();
@@ -604,6 +658,43 @@ const initMenu = (() => {
         setTimeout( () => {window.location = `https://www.youtube.com/watch?v=s93KC4AGKnY&ab_channel=Techno947`;}, 2500);
     }
 
+    const generateWinnerMenu = (winningPlayer) => {
+        
+        // let _parentReference = _menuReference.parentNode;
+
+        toggleInitMenuActive();
+
+
+        const winnerContainer = document.createElement('div');
+        _menuReference = winnerContainer;
+        winnerContainer.classList.add('winnerContainer');
+
+        const winnerDiv = document.createElement('div')
+        winnerDiv.classList.add('winnerDiv');
+        winnerDiv.innerHTML = `Congratulations ${winningPlayer}! <br>
+        You are the winner!`;
+
+        const playAgain = document.createElement('button');
+        playAgain.classList.add('winnerButton');
+        playAgain.innerHTML = "Play Again?";
+        playAgain.setAttribute("onclick", "initMenu.twoPlayerGame();");
+
+        const returnToMenu = document.createElement('button');
+        returnToMenu.classList.add('winnerButton');
+        returnToMenu.innerHTML = "Return to Main Menu";
+        returnToMenu.setAttribute("onclick", "initMenu.generateInitMenu();");
+
+        _container.appendChild(winnerContainer);
+        winnerContainer.appendChild(winnerDiv);
+        winnerDiv.innerHTML += "<br>";
+        winnerDiv.appendChild(playAgain);
+        winnerDiv.innerHTML += "<br>";
+        winnerDiv.appendChild(returnToMenu);
+
+
+
+    }
+
 
 
     return {
@@ -616,6 +707,7 @@ const initMenu = (() => {
         playersMenu,
         onePlayerGame,
         twoPlayerGame,
+        generateWinnerMenu,
     }
 })();
 
