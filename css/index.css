@@ -233,11 +233,10 @@ nav ul li {
     width: 150px;
     height: 150px;
     padding: 4px;
-
     top: -145px;
 
     animation: blinker 1s linear infinite;
-    
+
 }
 
 @keyframes blinker {
@@ -271,6 +270,39 @@ nav ul li {
 }
 
 .winnerDiv {
+    background-color: #afb1b6;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 18px;
+    padding: 5px;
+}
+
+/* --------------------- Styling for Draw Menu --------------------- */
+
+.drawContainer {
+    display: grid;
+    position: fixed;
+    height: 125px;
+    width: 350px;
+    background-color: grey;
+    top: calc(50% - 62px);
+    left: calc(50% - 175px);
+
+    padding: 5px;
+    box-shadow: 2px 2px 5px;
+    border-radius: 7px;
+    opacity: 20%;
+    transition-duration: .15s;
+
+}
+
+.drawContainer:hover {
+    opacity: 100%;
+}
+
+.drawDiv {
     background-color: #afb1b6;
     border-style: solid;
     border-width: 1px;

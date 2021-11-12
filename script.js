@@ -152,11 +152,16 @@ const gameEngine = (() => {
             gameBoard.updateGameBoard(position, "O");
         }
         
+        _turnCounter++;
+
         if(_turnCounter >= 4) {
             _checkWinCondition();
         }
 
-        _turnCounter++;
+        // End game in draw if no winning condition as been met
+        if(_turnCounter > 8) {
+           _endGameDraw();
+        }
 
         // console.log('You have completed a runtime of playRound');
     }
@@ -296,11 +301,21 @@ const gameEngine = (() => {
         // ${pos3}
         // and the winning player is ${winningPlayer}`);
         
-        console.log('Reached _endGameWinner');
+        // console.log('Reached _endGameWinner');
         displayController.createWinnerMenu(pos1, pos2, pos3, winningPlayer);
 
         _togglePlayingGame();
 
+
+    }
+
+    const _endGameDraw = () => {
+
+        _togglePlayingGame();
+
+        // console.log("Congratulations, you've reached a draw!");
+
+        initMenu.generateDrawMenu();
 
     }
 
@@ -694,6 +709,37 @@ const initMenu = (() => {
 
     }
 
+    const generateDrawMenu = () => {
+
+        toggleInitMenuActive();
+
+        const drawContainer = document.createElement('div');
+        _menuReference = drawContainer;
+        drawContainer.classList.add('drawContainer');
+
+        const drawDiv = document.createElement('div')
+        drawDiv.classList.add('drawDiv');
+        drawDiv.innerHTML = `Good try, but you have reached a draw!`;
+
+        const playAgain = document.createElement('button');
+        playAgain.classList.add('winnerButton');
+        playAgain.innerHTML = "Play Again?";
+        playAgain.setAttribute("onclick", "initMenu.twoPlayerGame();");
+
+        const returnToMenu = document.createElement('button');
+        returnToMenu.classList.add('winnerButton');
+        returnToMenu.innerHTML = "Return to Main Menu";
+        returnToMenu.setAttribute("onclick", "initMenu.generateInitMenu();");
+
+        _container.appendChild(drawContainer);
+        drawContainer.appendChild(drawDiv);
+        drawDiv.innerHTML += "<br>";
+        drawDiv.appendChild(playAgain);
+        drawDiv.innerHTML += "<br>";
+        drawDiv.appendChild(returnToMenu);
+
+    }
+
 
 
     return {
@@ -707,6 +753,8 @@ const initMenu = (() => {
         onePlayerGame,
         twoPlayerGame,
         generateWinnerMenu,
+        generateDrawMenu,
+
     }
 })();
 
