@@ -109,11 +109,13 @@ const gameEngine = (() => {
     let playingGame = false;
     const playerOne = Player("Player 1", "X");
     const playerTwo = Player("Player 2", "O");
+    let _gameAgainstEasyAI = false;
 
     const getInfo = () => {
         console.log(`I am gameEngine.getInfo, this is my information
         _turnCounter: ${_turnCounter}
         playingGame: ${playingGame} 
+        _gameAgainstAI: ${_gameAgainstAI} 
         playerOne: ${playerOne.getInfo()}
         playerTwo: ${playerTwo.getInfo()}`);
   
@@ -123,7 +125,60 @@ const gameEngine = (() => {
         _resetTurns();
         _togglePlayingGame();
 
+        playerOne.setName("Player 1");
+        playerTwo.setName("Player 2");
+
     }
+
+    const startGameEasy = () => {
+
+        console.log(`You've reached the place to start a game agaist an EASY AI`);
+        _resetTurns();
+        _togglePlayingGame();
+        _toggleGameAgainstEasyAI();
+
+
+        if( Math.floor(Math.random() * 2) ) {
+            // Player is going first
+            playerTwo.setName("AI");
+        } else {
+            // Player is going second
+            playerOne.setName("AI");
+            playRound(_makeEasyMoveAI);
+        }
+
+    }
+
+    const _makeEasyMoveAI = () => {
+    
+        const currentBoard = gameBoard.getInfo();
+
+        let pos = Math.floor(Math.random() * 8);
+
+        if (currentBoard[pos] !== "" ) {
+            return _makeEasyMoveAI();
+        } else {
+            return pos;
+        }
+
+
+    }
+
+    const startGameHard = () => {
+
+        console.log(`You've reached the place to start a game agaist an HARD AI`);
+        _resetTurns();
+        _togglePlayingGame();
+
+        // Returns a random number between 0 and 1
+        if( Math.floor(Math.random() * 2) ) {
+            // Player is going first
+        } else {
+            // Player is going second
+        }
+
+    }
+
 
     const playRound = (position) => {
         // Check if playing an active game
@@ -161,6 +216,11 @@ const gameEngine = (() => {
         // End game in draw if no winning condition as been met
         if(_turnCounter > 8) {
            _endGameDraw();
+        }
+
+        if(_gameAgainstEasyAI) {
+            // playRound(_makeEasyMoveAI());
+            setTimeout(playRound, 1000, _makeEasyMoveAI());
         }
 
         // console.log('You have completed a runtime of playRound');
@@ -301,26 +361,28 @@ const gameEngine = (() => {
         // ${pos3}
         // and the winning player is ${winningPlayer}`);
         
-        // console.log('Reached _endGameWinner');
-        displayController.createWinnerMenu(pos1, pos2, pos3, winningPlayer);
-
         _togglePlayingGame();
+        displayController.createWinnerMenu(pos1, pos2, pos3, winningPlayer);
 
 
     }
 
     const _endGameDraw = () => {
-
         _togglePlayingGame();
-
-        // console.log("Congratulations, you've reached a draw!");
-
         initMenu.generateDrawMenu();
 
     }
 
     const _getPlayers = () => {
         return [ playerOne, playerTwo ];
+    }
+
+    const _toggleGameAgainstEasyAI = () => {
+        if(_gameAgainstEasyAI) {
+            _gameAgainstEasyAI = false;
+        } else {
+            _gameAgainstEasyAI = true;
+        }
     }
     
 
@@ -329,6 +391,8 @@ const gameEngine = (() => {
         isPlayingGame,
         playRound,
         startGame,
+        startGameEasy,
+        startGameHard,
 
     }
 
@@ -611,7 +675,7 @@ const initMenu = (() => {
         menuButton.classList.add('menuButton');
         _menuButtonReference = menuButton;
         menuButton.innerText = "1 (vs AI)";
-        menuButton.setAttribute("onclick", "initMenu.onePlayerGame();");
+        menuButton.setAttribute("onclick", "initMenu.onePlayerGameMenu();");
 
         const menuButton1 = document.createElement('button');
         menuButton1.classList.add('menuButton');
@@ -637,14 +701,72 @@ const initMenu = (() => {
         return "You've made it to the playersMenu";
     }
 
-    const onePlayerGame = () => {
+    const onePlayerGameMenu = () => {
 
         let _parentReference = _menuReference.parentNode;
         _parentReference.removeChild(_menuReference);
 
-        console.log(`You've reached the logic to start a 1 player game!`);
+        const onePlayerContainer = document.createElement('div');
+        _menuReference = onePlayerContainer;
+        onePlayerContainer.classList.add('onePlayerContainer');
+        const onePlayerDiv = document.createElement('onePlayerDiv');
+        onePlayerDiv.classList.add('onePlayerDiv');
+        onePlayerDiv.innerHTML = `Please select a difficulty <br>`
+
+        const menuButton = document.createElement('button');
+        menuButton.classList.add('menuButton');
+        _menuButtonReference = menuButton;
+        menuButton.innerText = "Easy";
+        menuButton.setAttribute("onclick", "initMenu.onePlayerEasy();");
+
+        const menuButton1 = document.createElement('button');
+        menuButton1.classList.add('menuButton');
+        menuButton1.innerText = "Hard";
+        menuButton1.setAttribute("onclick", "initMenu.onePlayerHard();");
+
+        _container.appendChild(onePlayerContainer);
+        onePlayerContainer.appendChild(onePlayerDiv);
+
+        onePlayerDiv.appendChild(menuButton);
+        onePlayerDiv.innerHTML += "<br>"
+        onePlayerDiv.appendChild(menuButton1);
 
     }
+
+    const onePlayerEasy = () => {
+
+        let _parentReference = _menuReference.parentNode;
+        if (_menuReference != null) {
+            _parentReference.removeChild(_menuReference);
+        }
+
+        toggleInitMenuActive();
+
+        clearInterval(_intervalID);
+        displayController.cycleBoard();
+
+        // This is the code to start the game
+        setTimeout(gameEngine.startGameEasy, 1600);
+
+    }
+
+    const onePlayerHard = () => {
+
+        let _parentReference = _menuReference.parentNode;
+        if (_menuReference != null) {
+            _parentReference.removeChild(_menuReference);
+        }
+
+        toggleInitMenuActive();
+
+        clearInterval(_intervalID);
+        displayController.cycleBoard();
+
+        // This is the code to start the game
+        setTimeout(gameEngine.startGameHard, 1600);
+
+    }    
+
 
     const twoPlayerGame = () => {
 
@@ -750,7 +872,9 @@ const initMenu = (() => {
         visitPortfolio,
         visitEndgame,
         playersMenu,
-        onePlayerGame,
+        onePlayerEasy,
+        onePlayerHard,
+        onePlayerGameMenu,
         twoPlayerGame,
         generateWinnerMenu,
         generateDrawMenu,

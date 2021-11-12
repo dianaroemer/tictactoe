@@ -311,3 +311,32 @@ nav ul li {
     font-size: 18px;
     padding: 5px;
 }
+
+/* --------------------- Styling for Player vs AI Menu --------------------- */
+
+.onePlayerContainer {
+    display: grid;
+    position: fixed;
+    height: 125px;
+    width: 250px;
+    background-color: grey;
+    top: calc(50% - 62px);
+    left: calc(50% - 125px);
+
+    padding: 5px;
+    box-shadow: 2px 2px 5px;
+    border-radius: 7px;
+
+}
+
+
+
+.onePlayerDiv {
+    background-color: #afb1b6;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 18px;
+    padding: 5px;
+}
