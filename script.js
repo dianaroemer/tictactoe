@@ -110,15 +110,18 @@ const gameEngine = (() => {
     const playerOne = Player("Player 1", "X");
     const playerTwo = Player("Player 2", "O");
     let _gameAgainstEasyAI = false;
+    let playerMove = false;
+    let botViableMoves = [0,1,2,3,3,4,5,6,7,8];
 
     const getInfo = () => {
         console.log(`I am gameEngine.getInfo, this is my information
         _turnCounter: ${_turnCounter}
         playingGame: ${playingGame} 
-        _gameAgainstAI: ${_gameAgainstAI} 
+        _gameAgainstEasyAI: ${_gameAgainstEasyAI}
+        playerMove: ${playerMove} 
         playerOne: ${playerOne.getInfo()}
-        playerTwo: ${playerTwo.getInfo()}`);
-  
+        playerTwo: ${playerTwo.getInfo()}
+        botViableMoves: ${botViableMoves}`);
     }
 
     const startGame = () => {
@@ -134,32 +137,54 @@ const gameEngine = (() => {
 
         console.log(`You've reached the place to start a game agaist an EASY AI`);
         _resetTurns();
-        _togglePlayingGame();
+        if( !_gameAgainstEasyAI) {
+            _togglePlayingGame();
+        }
         _toggleGameAgainstEasyAI();
+        _initBotViableMoves();
 
 
         if( Math.floor(Math.random() * 2) ) {
+        // if (false) {
             // Player is going first
             playerTwo.setName("AI");
+            console.log(`You're going first!`);
         } else {
             // Player is going second
             playerOne.setName("AI");
-            playRound(_makeEasyMoveAI);
+            console.log(`You're going second!`);
+            // togglePlayerMove();
+            playRound(_makeEasyMoveAI());
         }
 
     }
 
+    // XXXUPDATEXXX Change this to work with a strikeout system instead of constantly randomized, a la, can't get 9 9 9 9 9 9 over and over
     const _makeEasyMoveAI = () => {
     
-        const currentBoard = gameBoard.getInfo();
+        // const currentBoard = gameBoard.getInfo();
 
-        let pos = Math.floor(Math.random() * 8);
+        console.log(botViableMoves);
+        let tempBoard = botViableMoves.filter( element => {
+            return element !== null;
+        })
 
-        if (currentBoard[pos] !== "" ) {
-            return _makeEasyMoveAI();
-        } else {
-            return pos;
-        }
+        console.log(tempBoard);
+
+        let pos = Math.floor(Math.random() * (tempBoard.length));
+
+        // let val = botViableMoves.splice(pos, 1);
+
+        return tempBoard[pos];
+
+
+
+        // if (currentBoard[pos] !== "" ) {
+        //     return _makeEasyMoveAI();
+        // } else {
+        //     console.log(pos);
+        //     return pos;
+        // }
 
 
     }
@@ -179,6 +204,9 @@ const gameEngine = (() => {
 
     }
 
+    const _initBotViableMoves = () => {
+        botViableMoves = [0,1,2,3,4,5,6,7,8];
+    }
 
     const playRound = (position) => {
         // Check if playing an active game
@@ -188,13 +216,15 @@ const gameEngine = (() => {
             return `Not playing active game! Error thrown by playRound`
         }
 
-        if( _turnCounter >= 9 ) {
-            console.log(`Reached maximum number of turns! Turn is invalid! 
-            _turnCounter: ${_turnCounter}
+        console.log(`hit playRound with input ${position}`);
+
+        // if( _turnCounter >= 9 ) {
+        //     console.log(`Reached maximum number of turns! Turn is invalid! 
+        //     _turnCounter: ${_turnCounter}
             
-            Does that mean this game is a draw? Is there a place to put this so it triggers on round 9's input? `);
-            return false;
-        }
+        //     Does that mean this game is a draw? Is there a place to put this so it triggers on round 9's input? `);
+        //     return false;
+        // }
 
         // Check if move is legal
         if (!_isMoveLegal(position)) {
@@ -206,8 +236,13 @@ const gameEngine = (() => {
         } else {
             gameBoard.updateGameBoard(position, "O");
         }
-        
+
+
+        // Trims botViableMoves board to prevent chance of unlimited recursion with randomized numbers
+        botViableMoves[position] = null;
+
         _turnCounter++;
+
 
         if(_turnCounter >= 4) {
             _checkWinCondition();
@@ -218,8 +253,9 @@ const gameEngine = (() => {
            _endGameDraw();
         }
 
-        if(_gameAgainstEasyAI) {
+        if(_gameAgainstEasyAI && playerMove) {
             // playRound(_makeEasyMoveAI());
+            togglePlayerMove();
             setTimeout(playRound, 1000, _makeEasyMoveAI());
         }
 
@@ -362,6 +398,9 @@ const gameEngine = (() => {
         // and the winning player is ${winningPlayer}`);
         
         _togglePlayingGame();
+        if(_gameAgainstEasyAI) {
+            _toggleGameAgainstEasyAI();
+        }
         displayController.createWinnerMenu(pos1, pos2, pos3, winningPlayer);
 
 
@@ -384,6 +423,18 @@ const gameEngine = (() => {
             _gameAgainstEasyAI = true;
         }
     }
+
+    const togglePlayerMove = () => {
+        if( playerMove ) {
+            playerMove = false;
+        } else {
+            playerMove = true;
+        }
+    }
+
+    const getGameAgainstEasy = () => {
+        return _gameAgainstEasyAI;
+    }
     
 
     return {
@@ -393,6 +444,8 @@ const gameEngine = (() => {
         startGame,
         startGameEasy,
         startGameHard,
+        togglePlayerMove,
+        getGameAgainstEasy,
 
     }
 
@@ -541,6 +594,7 @@ const displayController = (() => {
         element.addEventListener('click', () => {
             // console.log('you have clicked a div')
             // console.log(`You have clicked this ${element.dataset.position}`)
+            gameEngine.togglePlayerMove();
             gameEngine.playRound(element.dataset.position);
         })
     });
@@ -780,8 +834,16 @@ const initMenu = (() => {
         clearInterval(_intervalID);
         displayController.cycleBoard();
 
-        // This is init function for gameEngine, the setTimeout coincides with the delay created by displayController.cycleBoard()
-        setTimeout(gameEngine.startGame, 1600);
+        if( gameEngine.getGameAgainstEasy ) {
+            setTimeout(gameEngine.startGameEasy, 1600);
+        // } else if () {
+            // setTimeout(gameEngine.startGameHard, 1600);
+
+        } else {
+            // This is init function for gameEngine, the setTimeout coincides with the delay created by displayController.cycleBoard()
+            setTimeout(gameEngine.startGame, 1600);
+        }
+
 
         // console.log(`You've reached the logic to start a 2 player game!`)
     }
