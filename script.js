@@ -281,6 +281,7 @@ const gameEngine = (() => {
         const tempPlayers = _getPlayers();
         let winningPlayer;
 
+
         // Doing winningPiece conversion to determine which player owns the piece that won the game
         if( tempPlayers[0].getInput() === winningPiece ) {
             winningPlayer = tempPlayers[0].getName();
@@ -288,14 +289,14 @@ const gameEngine = (() => {
             winningPlayer = tempPlayers[1].getName();
         }
 
-        /* console.log(`WIN Condition has been found! ${winningPiece} is the winner
-        in slots:
-        ${pos1}
-        ${pos2}
-        ${pos3}
-        and the winning player is ${winningPlayer}`); */
+        // console.log(`WIN Condition has been found! ${winningPiece} is the winner
+        // in slots:
+        // ${pos1}
+        // ${pos2}
+        // ${pos3}
+        // and the winning player is ${winningPlayer}`);
         
-
+        console.log('Reached _endGameWinner');
         displayController.createWinnerMenu(pos1, pos2, pos3, winningPlayer);
 
         _togglePlayingGame();
@@ -449,9 +450,9 @@ const displayController = (() => {
     const createWinnerMenu = (pos1, pos2, pos3, winner) => {
 
         // Generate tacos
-        _boardList[pos1].innerHTML = `<img src="media/taco.png" alt="A photo of a taco" class="taco">`;
-        _boardList[pos2].innerHTML = `<img src="media/taco.png" alt="A photo of a taco" class="taco">`;
-        _boardList[pos3].innerHTML = `<img src="media/taco.png" alt="A photo of a taco" class="taco">`;
+        _boardList[pos1].innerHTML += `<img src="media/taco.png" alt="A photo of a taco" class="taco">`;
+        _boardList[pos2].innerHTML += `<img src="media/taco.png" alt="A photo of a taco" class="taco">`;
+        _boardList[pos3].innerHTML += `<img src="media/taco.png" alt="A photo of a taco" class="taco">`;
 
         initMenu.generateWinnerMenu(winner);
 
@@ -496,15 +497,19 @@ const initMenu = (() => {
         _container: ${_container}`);
 
 
-
     }
 
     // In a perfect world, any objects or DOM elements that run out of initMenu are passed to the displayController - but that's a paradigm for me to practice and learn on my next project, rather than on this one. Refactoring ain't great.
     const generateInitMenu = () => {
         
-        // displayController.clearBoard();
         gameBoard.resetGameBoard();
-        // _intervalID = setInterval(displayController.randomizedBoard, )
+
+        toggleInitMenuActive();
+        
+        if(_menuReference) {
+            let _parentReference = _menuReference.parentNode;
+            _parentReference.removeChild(_menuReference);
+        }
 
         const menuContainer = document.createElement('div');
         _menuReference = menuContainer;
@@ -549,16 +554,15 @@ const initMenu = (() => {
         _container.appendChild(menuContainer);
 
         
-        toggleInitMenuActive();
-
         _intervalID = setInterval( () => {
-            if (!_initMenuActive) {
-                displayController.cycleBoard();
-                toggleInitMenuActive();
-                clearInterval(_intervalID);
-            } else {
+            // if (!_initMenuActive) {
+            //     displayController.cycleBoard();
+            //     toggleInitMenuActive();
+            //     clearInterval(_intervalID);
+            //     console.log('Here I am you dingus');
+            // } else {
                 displayController.randomizedBoard()
-            }
+            // }
         }, 500);
 
         console.log('generateInitMenu has been completed');
@@ -630,7 +634,7 @@ const initMenu = (() => {
     const twoPlayerGame = () => {
 
         let _parentReference = _menuReference.parentNode;
-        if (_menuReference) {
+        if (_menuReference != null) {
             _parentReference.removeChild(_menuReference);
         }
 
@@ -659,11 +663,8 @@ const initMenu = (() => {
     }
 
     const generateWinnerMenu = (winningPlayer) => {
-        
-        // let _parentReference = _menuReference.parentNode;
 
         toggleInitMenuActive();
-
 
         const winnerContainer = document.createElement('div');
         _menuReference = winnerContainer;
@@ -690,8 +691,6 @@ const initMenu = (() => {
         winnerDiv.appendChild(playAgain);
         winnerDiv.innerHTML += "<br>";
         winnerDiv.appendChild(returnToMenu);
-
-
 
     }
 

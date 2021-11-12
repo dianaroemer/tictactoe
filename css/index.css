@@ -229,10 +229,15 @@ nav ul li {
 
 /* --------------------- Taco --------------------- */
 .taco {
+    position: relative;
     width: 150px;
     height: 150px;
     padding: 4px;
+
+    top: -145px;
+
     animation: blinker 1s linear infinite;
+    
 }
 
 @keyframes blinker {
@@ -247,10 +252,10 @@ nav ul li {
 .winnerContainer {
     display: grid;
     position: fixed;
-    height: 230px;
+    height: 125px;
     width: 350px;
     background-color: grey;
-    top: calc(50% - 115px);
+    top: calc(50% - 62px);
     left: calc(50% - 175px);
 
     padding: 5px;
