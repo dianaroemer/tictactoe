@@ -135,7 +135,7 @@ const gameEngine = (() => {
 
     const startGameEasy = () => {
 
-        console.log(`You've reached the place to start a game agaist an EASY AI`);
+        // console.log(`You've reached the place to start a game agaist an EASY AI`);
         _resetTurns();
         if( !_gameAgainstEasyAI) {
             _togglePlayingGame();
@@ -147,11 +147,13 @@ const gameEngine = (() => {
         if( Math.floor(Math.random() * 2) ) {
         // if (false) {
             // Player is going first
+            playerOne.setName("Player 1")
             playerTwo.setName("AI");
             console.log(`You're going first!`);
         } else {
             // Player is going second
             playerOne.setName("AI");
+            playerTwo.setName("Player 2")
             console.log(`You're going second!`);
             // togglePlayerMove();
             playRound(_makeEasyMoveAI());
@@ -881,8 +883,12 @@ const initMenu = (() => {
 
         const winnerDiv = document.createElement('div')
         winnerDiv.classList.add('winnerDiv');
-        winnerDiv.innerHTML = `Congratulations ${winningPlayer}! <br>
-        You are the winner!`;
+        if(winningPlayer === "AI" ) {
+            winnerDiv.innerHTML = `Congratulations developer, you beat a human player!`;
+        } else {
+            winnerDiv.innerHTML = `Congratulations ${winningPlayer}! <br>
+            You are the winner!`;
+        }
 
         const playAgain = document.createElement('button');
         playAgain.classList.add('winnerButton');
