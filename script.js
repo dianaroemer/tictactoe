@@ -164,12 +164,12 @@ const gameEngine = (() => {
     
         // const currentBoard = gameBoard.getInfo();
 
-        console.log(botViableMoves);
+        // console.log(botViableMoves);
         let tempBoard = botViableMoves.filter( element => {
             return element !== null;
         })
 
-        console.log(tempBoard);
+        // console.log(tempBoard);
 
         let pos = Math.floor(Math.random() * (tempBoard.length));
 
@@ -401,6 +401,9 @@ const gameEngine = (() => {
         if(_gameAgainstEasyAI) {
             _toggleGameAgainstEasyAI();
         }
+        if(playerMove) {
+            togglePlayerMove();
+        };
         displayController.createWinnerMenu(pos1, pos2, pos3, winningPlayer);
 
 
@@ -408,6 +411,13 @@ const gameEngine = (() => {
 
     const _endGameDraw = () => {
         _togglePlayingGame();
+        if(_gameAgainstEasyAI) {
+            _toggleGameAgainstEasyAI();
+        }
+        if(playerMove) {
+            togglePlayerMove();
+        };
+
         initMenu.generateDrawMenu();
 
     }
