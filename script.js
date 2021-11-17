@@ -128,6 +128,10 @@ const gameEngine = (() => {
         _resetTurns();
         _togglePlayingGame();
 
+        if(_gameAgainstEasyAI) {
+            _toggleGameAgainstEasyAI();
+        }
+
         playerOne.setName("Player 1");
         playerTwo.setName("Player 2");
 
@@ -138,9 +142,9 @@ const gameEngine = (() => {
         // console.log(`You've reached the place to start a game agaist an EASY AI`);
         _resetTurns();
         if( !_gameAgainstEasyAI) {
-            _togglePlayingGame();
+            _toggleGameAgainstEasyAI();
         }
-        _toggleGameAgainstEasyAI();
+        _togglePlayingGame();
         _initBotViableMoves();
 
 
@@ -149,12 +153,12 @@ const gameEngine = (() => {
             // Player is going first
             playerOne.setName("Player 1")
             playerTwo.setName("AI");
-            console.log(`You're going first!`);
+            // console.log(`You're going first!`);
         } else {
             // Player is going second
             playerOne.setName("AI");
             playerTwo.setName("Player 2")
-            console.log(`You're going second!`);
+            // console.log(`You're going second!`);
             // togglePlayerMove();
             playRound(_makeEasyMoveAI());
         }
@@ -400,9 +404,9 @@ const gameEngine = (() => {
         // and the winning player is ${winningPlayer}`);
         
         _togglePlayingGame();
-        if(_gameAgainstEasyAI) {
-            _toggleGameAgainstEasyAI();
-        }
+        // if(_gameAgainstEasyAI) {
+        //     _toggleGameAgainstEasyAI();
+        // }
         if(playerMove) {
             togglePlayerMove();
         };
@@ -649,7 +653,9 @@ const initMenu = (() => {
         
         gameBoard.resetGameBoard();
 
-        toggleInitMenuActive();
+        if(!_initMenuActive) {
+            toggleInitMenuActive();
+        }
         
         if(_menuReference) {
             let _parentReference = _menuReference.parentNode;
@@ -710,7 +716,7 @@ const initMenu = (() => {
             // }
         }, 500);
 
-        console.log('generateInitMenu has been completed');
+        // console.log('generateInitMenu has been completed');
         return 'generateInitMenu has successfully been completed - initMenu has been created!';
     }
 
@@ -761,6 +767,7 @@ const initMenu = (() => {
         playersDiv.appendChild(menuButton1);
         playersDiv.innerHTML += "<br>";
         playersDiv.appendChild(menuButton2);
+        
         
 
         // console.log('here');
@@ -846,7 +853,9 @@ const initMenu = (() => {
         clearInterval(_intervalID);
         displayController.cycleBoard();
 
-        if( gameEngine.getGameAgainstEasy ) {
+        // XXXUPDATEXXX This toggle decides whether or not to play again against an AI, however this should be changed to function off an independant playAgainAgainstEasy, instead of tying into actively playing against Easy,
+            // There is a case in which playAgainstEasy != playAgainAgainstEasy, a la, ending a game and being in the menu
+        if( gameEngine.getGameAgainstEasy() ) {
             setTimeout(gameEngine.startGameEasy, 1600);
         // } else if () {
             // setTimeout(gameEngine.startGameHard, 1600);
@@ -970,7 +979,7 @@ function init() {
 
     initMenu.generateInitMenu();
 
-    console.log("Init has completed successfully");
+    // console.log("Init has completed successfully");
     return;
 
 }
