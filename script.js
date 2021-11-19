@@ -112,6 +112,7 @@ const gameEngine = (() => {
     let _gameAgainstEasyAI = false;
     let playerMove = false;
     let botViableMoves = [0,1,2,3,3,4,5,6,7,8];
+    let mostRecentGame = "";
 
     const getInfo = () => {
         console.log(`I am gameEngine.getInfo, this is my information
@@ -121,12 +122,14 @@ const gameEngine = (() => {
         playerMove: ${playerMove} 
         playerOne: ${playerOne.getInfo()}
         playerTwo: ${playerTwo.getInfo()}
-        botViableMoves: ${botViableMoves}`);
+        botViableMoves: ${botViableMoves}
+        mostRecentGame: ${mostRecentGame}`);
     }
 
     const startGame = () => {
         _resetTurns();
         _togglePlayingGame();
+        _setMostRecentGame("player");
 
         if(_gameAgainstEasyAI) {
             _toggleGameAgainstEasyAI();
@@ -146,6 +149,7 @@ const gameEngine = (() => {
         }
         _togglePlayingGame();
         _initBotViableMoves();
+        _setMostRecentGame("easy");
 
 
         if( Math.floor(Math.random() * 2) ) {
@@ -404,9 +408,9 @@ const gameEngine = (() => {
         // and the winning player is ${winningPlayer}`);
         
         _togglePlayingGame();
-        // if(_gameAgainstEasyAI) {
-        //     _toggleGameAgainstEasyAI();
-        // }
+        if(_gameAgainstEasyAI) {
+            _toggleGameAgainstEasyAI();
+        }
         if(playerMove) {
             togglePlayerMove();
         };
@@ -451,6 +455,18 @@ const gameEngine = (() => {
     const getGameAgainstEasy = () => {
         return _gameAgainstEasyAI;
     }
+
+    const getMostRecentGame = () => {
+        return mostRecentGame;
+    }
+
+    const _setMostRecentGame = (argument) => {
+        mostRecentGame = argument;
+    }
+
+    const resetMostRecentGame = () => {
+        mostRecentGame = "";
+    }
     
 
     return {
@@ -462,6 +478,8 @@ const gameEngine = (() => {
         startGameHard,
         togglePlayerMove,
         getGameAgainstEasy,
+        getMostRecentGame,
+        resetMostRecentGame,
 
     }
 
@@ -652,6 +670,7 @@ const initMenu = (() => {
     const generateInitMenu = () => {
         
         gameBoard.resetGameBoard();
+        gameEngine.resetMostRecentGame();
 
         if(!_initMenuActive) {
             toggleInitMenuActive();
@@ -855,8 +874,9 @@ const initMenu = (() => {
 
         // XXXUPDATEXXX This toggle decides whether or not to play again against an AI, however this should be changed to function off an independant playAgainAgainstEasy, instead of tying into actively playing against Easy,
             // There is a case in which playAgainstEasy != playAgainAgainstEasy, a la, ending a game and being in the menu
-        if( gameEngine.getGameAgainstEasy() ) {
+        if( gameEngine.getMostRecentGame() === "easy" ) {
             setTimeout(gameEngine.startGameEasy, 1600);
+
         // } else if () {
             // setTimeout(gameEngine.startGameHard, 1600);
 
