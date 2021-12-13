@@ -48,11 +48,21 @@ const gameBoard = (() => {
         }
     }
 
+    const logBoard = () => {
+        console.log(getInfo());
+        let board = getInfo();
+        console.log(`---------
+${(board[0] == '') ? " " : board[0]} | ${(board[1] == '') ? " " : board[1]} | ${(board[2] == '') ? " " : board[2]}
+${(board[3] == '') ? " " : board[3]} | ${(board[4] == '') ? " " : board[4]} | ${(board[5] == '') ? " " : board[5]}
+${(board[6] == '') ? " " : board[6]} | ${(board[7] == '') ? " " : board[7]} | ${(board[8] == '') ? " " : board[8]}
+---------`)
+    }
 
     return {
         getInfo,
         updateGameBoard,
-        resetGameBoard,        
+        resetGameBoard,
+        logBoard, 
     }
 
 })();
@@ -1057,3 +1067,239 @@ function init() {
 //   const jimmie = Player('jim', 10);
 //   const badGuy = Player('jeff', 5);
 //   jimmie.attack(badGuy);
+
+
+
+//
+
+let choice = -1;
+let maxVal = 0;
+let minVal = 0;
+
+function miniMax(board, maximizingPlayer) {
+    console.log('***')
+    console.log(
+    `---------
+    ${(board[0] == '') ? " " : board[0]} | ${(board[1] == '') ? " " : board[1]} | ${(board[2] == '') ? " " : board[2]}
+    ${(board[3] == '') ? " " : board[3]} | ${(board[4] == '') ? " " : board[4]} | ${(board[5] == '') ? " " : board[5]}
+    ${(board[6] == '') ? " " : board[6]} | ${(board[7] == '') ? " " : board[7]} | ${(board[8] == '') ? " " : board[8]}
+    ---------`)
+
+    // XXXUPDATEXXX TERMINAL NODE TEST
+    let boardTerminal = isBoardTerminal(board);
+    if (boardTerminal) {
+
+        console.log('Hit terminal board');
+
+        let terminalBoard = board.filter( element => {
+            return (element === "");
+        });
+
+        if(boardTerminal > 50) {
+            console.log(boardTerminal - (9 - terminalBoard.length))
+            return boardTerminal - (9 - terminalBoard.length);
+        }
+        else if (boardTerminal < 50){
+            console.log(boardTerminal + (9 - terminalBoard.length))
+            return boardTerminal + (9 - terminalBoard.length);
+        }
+        else {
+            console.log(boardTerminal)
+            return boardTerminal;
+        }
+
+
+    }
+
+
+
+
+    if (maximizingPlayer) {
+        let value = -1000;
+        
+        let input = "";
+        let inputBoard = board.filter( element => {
+            return (element == "");
+        });
+        (inputBoard.length % 2) ? (input = "X") : (input = "O");
+
+        board.forEach( (child, index) => {
+            if ( child !== "") return;
+            let passBoard = [...board];
+            passBoard[index] = input;
+            // let checkValue = value;
+            value = Math.max(value, miniMax(passBoard, false));
+            if ( value > maxVal ) {
+                console.log('Old Choice ' + choice);
+                choice = index;
+                maxVal = value;
+                console.log('New Choice ' + choice);
+            }
+            return value;
+        })
+               
+    } else {
+        let value = 1000;
+        
+        // Determine which input to use in passBoard
+        let input = "";
+        let inputBoard = board.filter( element => {
+            return (element == "");
+        });
+        (inputBoard.length % 2) ? (input = "X") : (input = "O");
+
+        board.forEach( (child, index) => {
+            if ( child !== "") return;
+            let passBoard = [...board];
+            passBoard[index] = input;
+            // let checkValue = value;
+            value = Math.min(value, miniMax(passBoard, true));
+            if ( value < minVal ) {
+                console.log('Old Choice ' + choice);
+                choice = index;
+                minVal = value;
+                console.log('New Choice ' + choice);
+            }
+            return value;
+        })
+    }
+
+}
+
+function isBoardTerminal (board) {
+
+    //Is board winning board?
+
+    const winBoard = board;
+    let keyPiece;
+
+    let isBoardWon = 0;
+
+    // Vertical Winning positions 
+    /* 
+    X | O | O     O | X | O     O | O | x     
+    X | O | O     O | X | O     O | O | X     
+    X | O | O     O | X | O     O | O | X     
+    */
+    keyPiece = winBoard[0];
+    if(keyPiece !== "") {
+        if( winBoard[3] === keyPiece && winBoard[6] === keyPiece) {
+            // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a vertical winning position, slots 0,3,6`)
+            if(keyPiece === "X") {
+                isBoardWon = 100;
+            } else {
+                isBoardWon = -100;
+            }
+            return isBoardWon;
+                }
+    }
+    keyPiece = winBoard[1];
+    if(keyPiece !== "") {
+        if( winBoard[4] === keyPiece && winBoard[7] === keyPiece) {
+            // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a vertical winning position, slots 1,4,7`)
+            if(keyPiece === "X") {
+                isBoardWon = 100;
+            } else {
+                isBoardWon = -100;
+            }
+            return isBoardWon;
+                }
+    }
+    keyPiece = winBoard[2];
+    if(keyPiece !== "") {
+        if( winBoard[5] === keyPiece && winBoard[8] === keyPiece) {
+            // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a vertical winning position, slots 2,5,8`)
+            if(keyPiece === "X") {
+                isBoardWon = 100;
+            } else {
+                isBoardWon = -100;
+            }
+            return isBoardWon;
+                }
+    }
+
+    // Horizontal Winning positions 
+    /* 
+    X | X | X     O | O | O     O | O | O     
+    O | O | O     X | X | X     O | O | O     
+    O | O | O     O | O | O     X | X | X     
+    */
+    keyPiece = winBoard[0];
+    if(keyPiece !== "") {
+        if( winBoard[1] === keyPiece && winBoard[2] === keyPiece) {
+            // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Horizontal winning position, slots 0,1,2`)
+            if(keyPiece === "X") {
+                isBoardWon = 100;
+            } else {
+                isBoardWon = -100;
+            }
+            return isBoardWon;
+                }
+    }
+    keyPiece = winBoard[3];
+    if(keyPiece !== "") {
+        if( winBoard[4] === keyPiece && winBoard[5] === keyPiece) {
+            // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Horizontal winning position, slots 3,4,5`)
+            if(keyPiece === "X") {
+                isBoardWon = 100;
+            } else {
+                isBoardWon = -100;
+            }
+            return isBoardWon;
+                }
+    }
+    keyPiece = winBoard[6];
+    if(keyPiece !== "") {
+        if( winBoard[7] === keyPiece && winBoard[8] === keyPiece) {
+            // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Horizontal winning position, slots 6,7,8`)
+            if(keyPiece === "X") {
+                isBoardWon = 100;
+            } else {
+                isBoardWon = -100;
+            }
+            return isBoardWon;
+        }
+    }
+
+    // Diagonal Winning Positions
+    /* 
+    X | O | O     O | O | X     
+    O | X | O     O | X | O     
+    O | O | X     X | O | O    
+    */
+    keyPiece = winBoard[0];
+    if(keyPiece !== "") {
+        if( winBoard[4] === keyPiece && winBoard[8] === keyPiece) {
+            // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Diagonal winning position, slots 0,4,8`)
+            if(keyPiece === "X") {
+                isBoardWon = 100;
+            } else {
+                isBoardWon = -100;
+            }
+            return isBoardWon;
+        }
+    }
+    keyPiece = winBoard[2];
+    if(keyPiece !== "") {
+        if( winBoard[4] === keyPiece && winBoard[6] === keyPiece) {
+            // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Diagonal winning position, slots 2,4,6`)
+            if(keyPiece === "X") {
+                isBoardWon = 100;
+            } else {
+                isBoardWon = -100;
+            }
+            return isBoardWon;
+        }
+    }
+
+    let finBoard = winBoard.filter( element => {
+        return (element === "");
+    })
+    if (finBoard.length === 0) {
+        isBoardWon = 3;
+        console.log("Draw Board");
+    }
+
+    return isBoardWon;
+
+}
