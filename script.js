@@ -1096,15 +1096,15 @@ function miniMax(board, maximizingPlayer) {
         // at a depth of: 0000${terminalBoard.length}`);
 
         if(boardTerminal > 50) {
-            console.log((boardTerminal - (9 - terminalBoard.length)) + ": Win State")
+            // console.log((boardTerminal - (9 - terminalBoard.length)) + ": Win State")
             return boardTerminal - (9 - terminalBoard.length);
         }
         else if (boardTerminal < -50){
-            console.log(((terminalBoard.length) + boardTerminal) + ": Loss State")
+            // console.log(((terminalBoard.length) + boardTerminal) + ": Loss State")
             return (terminalBoard.length) + boardTerminal;
         }
         else {
-            console.log(boardTerminal + ": Draw State")
+            // console.log(boardTerminal + ": Draw State")
             return boardTerminal;
         }
 
@@ -1145,7 +1145,7 @@ function miniMax(board, maximizingPlayer) {
 
         })
 
-        console.log('***')
+        // console.log('***')
         // console.log(
         // `     ---------
         // ${(board[0] == '') ? " " : board[0]} | ${(board[1] == '') ? " " : board[1]} | ${(board[2] == '') ? " " : board[2]}
@@ -1153,11 +1153,11 @@ function miniMax(board, maximizingPlayer) {
         // ${(board[6] == '') ? " " : board[6]} | ${(board[7] == '') ? " " : board[7]} | ${(board[8] == '') ? " " : board[8]}
         // ---------`);
 
-        console.log(
-`Maximizing
-Currently testing input: ${input} 
-scores: ${scores}
-moves: ${moves}`);
+//         console.log(
+// `Maximizing
+// Currently testing input: ${input} 
+// scores: ${scores}
+// moves: ${moves}`);
 
         let highestVal = Math.max(...scores);
         choice = moves[scores.indexOf(highestVal)]
@@ -1194,7 +1194,7 @@ moves: ${moves}`);
 
         })
 
-        console.log('***')
+        // console.log('***')
         // console.log(
         // `     ---------
         // ${(board[0] == '') ? " " : board[0]} | ${(board[1] == '') ? " " : board[1]} | ${(board[2] == '') ? " " : board[2]}
@@ -1202,11 +1202,11 @@ moves: ${moves}`);
         // ${(board[6] == '') ? " " : board[6]} | ${(board[7] == '') ? " " : board[7]} | ${(board[8] == '') ? " " : board[8]}
         // ---------`);
 
-        console.log(
-`Minimizing
-Currently testing input: ${input} 
-scores: ${scores}
-moves: ${moves}`);
+//         console.log(
+// `Minimizing
+// Currently testing input: ${input} 
+// scores: ${scores}
+// moves: ${moves}`);
 
         let lowestVal = Math.min(...scores);
         choice = moves[scores.indexOf(lowestVal)]
