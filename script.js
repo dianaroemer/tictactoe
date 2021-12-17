@@ -269,11 +269,10 @@ const gameEngine = (() => {
         }
 
         // End game in draw if no winning condition as been met
-        if(_turnCounter > 8) {
-            console.log("You have reached a draw endgame.")
-            if(isPlayingGame()) {
-               _endGameDraw(); 
-            }
+        if(_turnCounter > 8 && isPlayingGame()) {
+            // console.log("You have reached a draw endgame.")
+            _endGameDraw(); 
+            
         }
 
         if(_gameAgainstEasyAI && playerMove) {
