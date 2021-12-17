@@ -248,8 +248,6 @@ const gameEngine = (() => {
         return _miniMaxResult;
     }
 
-
-
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -1059,8 +1057,7 @@ const initMenu = (() => {
         playersContainer.classList.add('playersContainer');
         const playersDiv = document.createElement('playersDiv');
         playersDiv.classList.add('playersDiv');
-        playersDiv.innerHTML = `One or two players? <br>`
-        playersDiv.innerHTML += `Please select number of players:`
+        playersDiv.innerHTML = `Please select number of players:`
 
         const menuButton = document.createElement('button');
         menuButton.classList.add('menuButton');

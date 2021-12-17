@@ -203,7 +203,7 @@ nav ul li {
 .playersContainer {
     display: grid;
     position: fixed;
-    height: 230px;
+    height: 170px;
     width: 350px;
     background-color: grey;
     top: calc(50% - 115px);
