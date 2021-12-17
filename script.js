@@ -236,7 +236,7 @@ const gameEngine = (() => {
             return `Not playing active game! Error thrown by playRound`
         }
 
-        console.log(`hit playRound with input ${position}`);
+        // console.log(`hit playRound with input ${position}`);
 
         // if( _turnCounter >= 9 ) {
         //     console.log(`Reached maximum number of turns! Turn is invalid! 
@@ -270,7 +270,10 @@ const gameEngine = (() => {
 
         // End game in draw if no winning condition as been met
         if(_turnCounter > 8) {
-           _endGameDraw();
+            console.log("You have reached a draw endgame.")
+            if(isPlayingGame()) {
+               _endGameDraw(); 
+            }
         }
 
         if(_gameAgainstEasyAI && playerMove) {
