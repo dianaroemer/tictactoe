@@ -120,9 +120,12 @@ const gameEngine = (() => {
     const playerOne = Player("Player 1", "X");
     const playerTwo = Player("Player 2", "O");
     let _gameAgainstEasyAI = false;
+    let _gameAgainstHardAI = false;
     let playerMove = false;
     let botViableMoves = [0,1,2,3,3,4,5,6,7,8];
     let mostRecentGame = "";
+    let _miniMaxCaller = "";
+    let _miniMaxResult = -1;
 
     const getInfo = () => {
         console.log(`I am gameEngine.getInfo, this is my information
@@ -143,6 +146,9 @@ const gameEngine = (() => {
 
         if(_gameAgainstEasyAI) {
             _toggleGameAgainstEasyAI();
+        }
+        if(_gameAgainstHardAI) {
+            _toggleGameAgainstHardAI();
         }
 
         playerOne.setName("Player 1");
@@ -179,50 +185,317 @@ const gameEngine = (() => {
 
     }
 
-    // XXXUPDATEXXX Change this to work with a strikeout system instead of constantly randomized, a la, can't get 9 9 9 9 9 9 over and over
     const _makeEasyMoveAI = () => {
     
-        // const currentBoard = gameBoard.getInfo();
-
-        // console.log(botViableMoves);
         let tempBoard = botViableMoves.filter( element => {
             return element !== null;
         })
 
-        // console.log(tempBoard);
-
         let pos = Math.floor(Math.random() * (tempBoard.length));
 
-        // let val = botViableMoves.splice(pos, 1);
-
         return tempBoard[pos];
-
-
-
-        // if (currentBoard[pos] !== "" ) {
-        //     return _makeEasyMoveAI();
-        // } else {
-        //     console.log(pos);
-        //     return pos;
-        // }
-
 
     }
 
     const startGameHard = () => {
 
-        console.log(`You've reached the place to start a game agaist an HARD AI`);
+        // console.log(`You've reached the place to start a game agaist an HARD AI`);
         _resetTurns();
+        if( !_gameAgainstHardAI ) {
+            _toggleGameAgainstHardAI();
+        }
         _togglePlayingGame();
+        _setMostRecentGame("hard");
+        _resetMiniMaxCaller();
 
         // Returns a random number between 0 and 1
         if( Math.floor(Math.random() * 2) ) {
-            // Player is going first
+            // Human Player is going first
+            playerOne.setName("Player 1");
+            playerTwo.setName("AI");
+            _setMiniMaxCaller("O")
+
         } else {
             // Player is going second
+            playerOne.setName("AI");
+            playerTwo.setName("Player 2")
+            _setMiniMaxCaller("X")
+
+            // When playing first, it is always optimal to play a corner. Because of how the miniMax algorithm is written, it will choose the first instance of the highest tying values, when maximizing. For the first input, that means ALWAYS picking slot 0 (upper left corner). Orientation is irrelevant, so this code randomizes which corner, just to keep things fresh and rotate the board when the HardAI is going first
+            let cornerArray = [0,2,6,8];
+            let firstMoveIndex = Math.floor(Math.random() * 4);
+            playRound(cornerArray[firstMoveIndex]);
+        }
+    }
+
+    const _makeHardMoveAI = () => {
+        
+        _miniMaxResult = -1;
+
+        // Hard coding turn 2 of AI when playing against first corner moves from X
+        if(playerTwo.getName === "AI" && _turnCounter === 2) {
+            let tempBoard = gameBoard.getInfo();
+            if (tempBoard[0] === "X" || tempBoard[2] === "X" || tempBoard[6] === "X" || tempBoard[8] === "X") {
+                console.log("Hit turn 2 special condition");
+                return 4;
+            }
+
+        }
+        
+        _miniMax(gameBoard.getInfo(), true);
+        // console.log("Make a move in slot " + _miniMaxResult);
+       
+        return _miniMaxResult;
+    }
+
+
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+    const _miniMax = (board, maximizingPlayer) => {
+ 
+        let boardTerminal = _isBoardTerminal(board);
+        if (boardTerminal) {
+    
+            let terminalBoard = board.filter( element => {
+                return (element === "");
+            });
+
+            if(boardTerminal > 50) {
+                return boardTerminal - (9 - terminalBoard.length);
+            }
+            else if (boardTerminal < -50){
+                return (terminalBoard.length) + boardTerminal;
+            }
+            else {
+                return boardTerminal;
+            }
+        }
+         
+        let scores = []
+        let moves = []
+    
+        if (maximizingPlayer) {
+            let input = "";
+            let inputBoard = board.filter( element => {
+                return (element == "");
+            });
+            (inputBoard.length % 2) ? (input = "X") : (input = "O");
+    
+            board.forEach( (child, index) => {
+                if ( child !== "") return;
+                let passBoard = [...board];
+                passBoard[index] = input;
+    
+                let foo = _miniMax(passBoard, false);
+                scores.push(foo);
+                moves.push(index);
+    
+            })
+
+            let highestVal = Math.max(...scores);
+            // ------------------ Here --------------
+            _miniMaxResult = moves[scores.indexOf(highestVal)]
+            // ------------------ Here --------------
+
+            return highestVal;
+                   
+        } else {
+            let input = "";
+            let inputBoard = board.filter( element => {
+                return (element == "");
+            });
+            (inputBoard.length % 2) ? (input = "X") : (input = "O");
+    
+            board.forEach( (child, index) => {
+                if ( child !== "") return;
+                let passBoard = [...board];
+                passBoard[index] = input;
+    
+                let foo = _miniMax(passBoard, true);
+                scores.push(foo);
+                moves.push(index);
+    
+            })
+    
+            let lowestVal = Math.min(...scores);
+            // ------------------ Here --------------
+            _miniMaxResult = moves[scores.indexOf(lowestVal)]
+            // ------------------ Here --------------
+    
+            return lowestVal;
+    
+        }
+    
+    }
+
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+    const _isBoardTerminal = (board) => {
+        //Is board winning board?
+
+        const winBoard = board;
+        let keyPiece;
+        
+
+        let remainingMovesBoard = board.filter( element => {
+            return (element === "");
+        });
+        
+        // Getting the remaining open slots to calculate who goes next, then subtracting 1 to get who went previously
+        let mostRecentInput = ((remainingMovesBoard.length - 1) % 2) ? "X" : "O";
+
+        let terminalBoardValue = 0;
+
+        // Vertical Winning positions 
+        /* 
+        X | O | O     O | X | O     O | O | x     
+        X | O | O     O | X | O     O | O | X     
+        X | O | O     O | X | O     O | O | X     
+        */
+        keyPiece = winBoard[0];
+        if(keyPiece !== "") {
+            if( winBoard[3] === keyPiece && winBoard[6] === keyPiece) {
+                // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a vertical winning position, slots 0,3,6`)
+                if(mostRecentInput === _miniMaxCaller) {
+                    terminalBoardValue = 100;
+                } else {
+                    terminalBoardValue = -100;
+                }
+                return terminalBoardValue;
+            }
+        }
+        keyPiece = winBoard[1];
+        if(keyPiece !== "") {
+            if( winBoard[4] === keyPiece && winBoard[7] === keyPiece) {
+                // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a vertical winning position, slots 1,4,7`)
+                if(mostRecentInput === _miniMaxCaller) {
+                    terminalBoardValue = 100;
+                } else {
+                    terminalBoardValue = -100;
+                }
+                return terminalBoardValue;
+                    }
+        }
+        keyPiece = winBoard[2];
+        if(keyPiece !== "") {
+            if( winBoard[5] === keyPiece && winBoard[8] === keyPiece) {
+                // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a vertical winning position, slots 2,5,8`)
+                if(mostRecentInput === _miniMaxCaller) {
+                    terminalBoardValue = 100;
+                } else {
+                    terminalBoardValue = -100;
+                }
+                return terminalBoardValue;
+                    }
         }
 
+        // Horizontal Winning positions 
+        /* 
+        X | X | X     O | O | O     O | O | O     
+        O | O | O     X | X | X     O | O | O     
+        O | O | O     O | O | O     X | X | X     
+        */
+        keyPiece = winBoard[0];
+        if(keyPiece !== "") {
+            if( winBoard[1] === keyPiece && winBoard[2] === keyPiece) {
+                // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Horizontal winning position, slots 0,1,2`)
+                if(mostRecentInput === _miniMaxCaller) {
+                    terminalBoardValue = 100;
+                } else {
+                    terminalBoardValue = -100;
+                }
+                return terminalBoardValue;
+                    }
+        }
+        keyPiece = winBoard[3];
+        if(keyPiece !== "") {
+            if( winBoard[4] === keyPiece && winBoard[5] === keyPiece) {
+                // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Horizontal winning position, slots 3,4,5`)
+                if(mostRecentInput === _miniMaxCaller) {
+                    terminalBoardValue = 100;
+                } else {
+                    terminalBoardValue = -100;
+                }
+                return terminalBoardValue;
+                    }
+        }
+        keyPiece = winBoard[6];
+        if(keyPiece !== "") {
+            if( winBoard[7] === keyPiece && winBoard[8] === keyPiece) {
+                // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Horizontal winning position, slots 6,7,8`)
+                if(mostRecentInput === _miniMaxCaller) {
+                    terminalBoardValue = 100;
+                } else {
+                    terminalBoardValue = -100;
+                }
+                return terminalBoardValue;
+            }
+        }
+
+        // Diagonal Winning Positions
+        /* 
+        X | O | O     O | O | X     
+        O | X | O     O | X | O     
+        O | O | X     X | O | O    
+        */
+        keyPiece = winBoard[0];
+        if(keyPiece !== "") {
+            if( winBoard[4] === keyPiece && winBoard[8] === keyPiece) {
+                // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Diagonal winning position, slots 0,4,8`)
+                if(mostRecentInput === _miniMaxCaller) {
+                    terminalBoardValue = 100;
+                } else {
+                    terminalBoardValue = -100;
+                }
+                return terminalBoardValue;
+            }
+        }
+        keyPiece = winBoard[2];
+        if(keyPiece !== "") {
+            if( winBoard[4] === keyPiece && winBoard[6] === keyPiece) {
+                // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Diagonal winning position, slots 2,4,6`)
+                if(mostRecentInput === _miniMaxCaller) {
+                    terminalBoardValue = 100;
+                } else {
+                    terminalBoardValue = -100;
+                }
+                return terminalBoardValue;
+            }
+        }
+
+        let finBoard = winBoard.filter( element => {
+            return (element === "");
+        })
+        // console.log(finBoard.length);
+        if (finBoard.length === 0) {
+            terminalBoardValue = 1;
+            // console.log("Draw Board");
+        }
+
+        return terminalBoardValue;
+
     }
+
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
 
     const _initBotViableMoves = () => {
         botViableMoves = [0,1,2,3,4,5,6,7,8];
@@ -279,6 +552,9 @@ const gameEngine = (() => {
             // playRound(_makeEasyMoveAI());
             togglePlayerMove();
             setTimeout(playRound, 1000, _makeEasyMoveAI());
+        } else if (_gameAgainstHardAI && playerMove) {
+            togglePlayerMove();
+            setTimeout(playRound, 1000, _makeHardMoveAI());
         }
 
         // console.log('You have completed a runtime of playRound');
@@ -456,6 +732,10 @@ const gameEngine = (() => {
         }
     }
 
+    const _toggleGameAgainstHardAI = () => {
+        _gameAgainstHardAI = (_gameAgainstHardAI ? false : true);
+    }
+
     const togglePlayerMove = () => {
         if( playerMove ) {
             playerMove = false;
@@ -478,6 +758,14 @@ const gameEngine = (() => {
 
     const resetMostRecentGame = () => {
         mostRecentGame = "";
+    }
+
+    const _setMiniMaxCaller = (argument) => {
+        _miniMaxCaller = argument;
+    }
+
+    const _resetMiniMaxCaller = () => {
+        _miniMaxCaller = "";
     }
     
 
@@ -888,10 +1176,8 @@ const initMenu = (() => {
             // There is a case in which playAgainstEasy != playAgainAgainstEasy, a la, ending a game and being in the menu
         if( gameEngine.getMostRecentGame() === "easy" ) {
             setTimeout(gameEngine.startGameEasy, 1600);
-
-        // } else if () {
-            // setTimeout(gameEngine.startGameHard, 1600);
-
+        } else if (gameEngine.getMostRecentGame() === "hard" ) {
+            setTimeout(gameEngine.startGameHard, 1600);
         } else {
             // This is init function for gameEngine, the setTimeout coincides with the delay created by displayController.cycleBoard()
             setTimeout(gameEngine.startGame, 1600);
@@ -1077,11 +1363,9 @@ function init() {
 let choice = -1;
 let maxVal = 0;
 let minVal = 0;
-let miniMaxCaller = "O";
+let miniMaxCaller = "X";
 
 function miniMax(board, maximizingPlayer) {
-
-
  
     // XXXUPDATEXXX TERMINAL NODE TEST
     let boardTerminal = isBoardTerminal(board);
@@ -1119,7 +1403,6 @@ function miniMax(board, maximizingPlayer) {
 
 
     if (maximizingPlayer) {
-        let value = -1000;
        
         let input = "";
         let inputBoard = board.filter( element => {
@@ -1155,11 +1438,11 @@ function miniMax(board, maximizingPlayer) {
         // ${(board[6] == '') ? " " : board[6]} | ${(board[7] == '') ? " " : board[7]} | ${(board[8] == '') ? " " : board[8]}
         // ---------`);
 
-//         console.log(
-// `Maximizing
-// Currently testing input: ${input} 
-// scores: ${scores}
-// moves: ${moves}`);
+        console.log(
+`Maximizing
+Currently testing input: ${input} 
+scores: ${scores}
+moves: ${moves}`);
 
         let highestVal = Math.max(...scores);
         choice = moves[scores.indexOf(highestVal)]
@@ -1167,7 +1450,6 @@ function miniMax(board, maximizingPlayer) {
         return highestVal;
                
     } else {
-        let value = 1000;
 
         // Determine which input to use in passBoard
         let input = "";
@@ -1204,11 +1486,11 @@ function miniMax(board, maximizingPlayer) {
         // ${(board[6] == '') ? " " : board[6]} | ${(board[7] == '') ? " " : board[7]} | ${(board[8] == '') ? " " : board[8]}
         // ---------`);
 
-//         console.log(
-// `Minimizing
-// Currently testing input: ${input} 
-// scores: ${scores}
-// moves: ${moves}`);
+        console.log(
+`Minimizing
+Currently testing input: ${input} 
+scores: ${scores}
+moves: ${moves}`);
 
         let lowestVal = Math.min(...scores);
         choice = moves[scores.indexOf(lowestVal)]
@@ -1220,7 +1502,6 @@ function miniMax(board, maximizingPlayer) {
 }
 
 function isBoardTerminal (board) {
-
     //Is board winning board?
 
     const winBoard = board;
