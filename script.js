@@ -1075,29 +1075,33 @@ function init() {
 let choice = -1;
 let maxVal = 0;
 let minVal = 0;
-let miniMaxCaller = "X";
+let miniMaxCaller = "O";
 
 function miniMax(board, maximizingPlayer) {
-    console.log('***')
-    console.log(
-    `     ---------
-    ${(board[0] == '') ? " " : board[0]} | ${(board[1] == '') ? " " : board[1]} | ${(board[2] == '') ? " " : board[2]}
-    ${(board[3] == '') ? " " : board[3]} | ${(board[4] == '') ? " " : board[4]} | ${(board[5] == '') ? " " : board[5]}
-    ${(board[6] == '') ? " " : board[6]} | ${(board[7] == '') ? " " : board[7]} | ${(board[8] == '') ? " " : board[8]}
-    ---------`);
+    // console.log('***')
+    // console.log(
+    // `     ---------
+    // ${(board[0] == '') ? " " : board[0]} | ${(board[1] == '') ? " " : board[1]} | ${(board[2] == '') ? " " : board[2]}
+    // ${(board[3] == '') ? " " : board[3]} | ${(board[4] == '') ? " " : board[4]} | ${(board[5] == '') ? " " : board[5]}
+    // ${(board[6] == '') ? " " : board[6]} | ${(board[7] == '') ? " " : board[7]} | ${(board[8] == '') ? " " : board[8]}
+    // ---------`);
+
+    let scores = [];
+    let moves = [];
 
     // XXXUPDATEXXX TERMINAL NODE TEST
     let boardTerminal = isBoardTerminal(board);
     if (boardTerminal) {
 
-        console.log(`Hit terminal board, current values are
-        maxVal: ${maxVal}
-        minVal: ${minVal}
-        choice: ${choice}`);
-
         let terminalBoard = board.filter( element => {
             return (element === "");
         });
+
+        // console.log(`Hit terminal board, current values are
+        // maxVal: ${maxVal}
+        // minVal: ${minVal}
+        // choice: ${choice}
+        // at a depth of: 0000${terminalBoard.length}`);
 
         if(boardTerminal > 50) {
             console.log((boardTerminal - (9 - terminalBoard.length)) + ": Win State")
@@ -1111,19 +1115,6 @@ function miniMax(board, maximizingPlayer) {
             console.log(boardTerminal + ": Draw State")
             return boardTerminal;
         }
-
-        // if(boardTerminal > 50) {
-        //     console.log((boardTerminal) + ": Win State")
-        //     return boardTerminal;
-        // }
-        // else if (boardTerminal < -50){
-        //     console.log((boardTerminal) + ": Loss State")
-        //     return boardTerminal;
-        // }
-        // else {
-        //     console.log(boardTerminal + ": Draw State")
-        //     return boardTerminal;
-        // }
 
 
     }
@@ -1146,14 +1137,17 @@ function miniMax(board, maximizingPlayer) {
             passBoard[index] = input;
             // let checkValue = value;
             value = Math.max(value, miniMax(passBoard, false));
+            console.log(value);
             if ( value > maxVal ) {
-                console.log('Old Choice ' + choice);
+                // console.log('Old Choice ' + choice);
                 choice = index;
                 maxVal = value;
-                console.log('New Choice ' + choice);
+                // console.log('New Choice ' + choice);
             }
-            return value;
         })
+
+        return value;
+
                
     } else {
         let value = 1000;
@@ -1171,14 +1165,17 @@ function miniMax(board, maximizingPlayer) {
             passBoard[index] = input;
             // let checkValue = value;
             value = Math.min(value, miniMax(passBoard, true));
+            console.log(value);
             if ( value < minVal ) {
-                console.log('Old Choice ' + choice);
+                // console.log('Old Choice ' + choice);
                 choice = index;
                 minVal = value;
-                console.log('New Choice ' + choice);
+                // console.log('New Choice ' + choice);
             }
-            return value;
         })
+
+        return value;
+
     }
 
 }
@@ -1328,4 +1325,12 @@ function isBoardTerminal (board) {
 
     return terminalBoardValue;
 
+}
+
+function hardMove() {
+    choice = -1;
+    minVal = 0;
+    maxVal = 0;
+    miniMax(gameBoard.getInfo(), true);
+    console.log("Make a move in slot " + choice);
 }
