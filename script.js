@@ -1356,298 +1356,298 @@ function init() {
 
 
 
+// Testing area for miniMax function
+// let choice = -1;
+// let maxVal = 0;
+// let minVal = 0;
+// let miniMaxCaller = "X";
 
-let choice = -1;
-let maxVal = 0;
-let minVal = 0;
-let miniMaxCaller = "X";
-
-function miniMax(board, maximizingPlayer) {
+// function miniMax(board, maximizingPlayer) {
  
-    // XXXUPDATEXXX TERMINAL NODE TEST
-    let boardTerminal = isBoardTerminal(board);
-    if (boardTerminal) {
+//     // XXXUPDATEXXX TERMINAL NODE TEST
+//     let boardTerminal = isBoardTerminal(board);
+//     if (boardTerminal) {
 
-        let terminalBoard = board.filter( element => {
-            return (element === "");
-        });
+//         let terminalBoard = board.filter( element => {
+//             return (element === "");
+//         });
 
-        // console.log(`Hit terminal board, current values are
-        // maxVal: ${maxVal}
-        // minVal: ${minVal}
-        // choice: ${choice}
-        // at a depth of: 0000${terminalBoard.length}`);
+//         // console.log(`Hit terminal board, current values are
+//         // maxVal: ${maxVal}
+//         // minVal: ${minVal}
+//         // choice: ${choice}
+//         // at a depth of: 0000${terminalBoard.length}`);
 
-        if(boardTerminal > 50) {
-            // console.log((boardTerminal - (9 - terminalBoard.length)) + ": Win State")
-            return boardTerminal - (9 - terminalBoard.length);
-        }
-        else if (boardTerminal < -50){
-            // console.log(((terminalBoard.length) + boardTerminal) + ": Loss State")
-            return (terminalBoard.length) + boardTerminal;
-        }
-        else {
-            // console.log(boardTerminal + ": Draw State")
-            return boardTerminal;
-        }
+//         if(boardTerminal > 50) {
+//             // console.log((boardTerminal - (9 - terminalBoard.length)) + ": Win State")
+//             return boardTerminal - (9 - terminalBoard.length);
+//         }
+//         else if (boardTerminal < -50){
+//             // console.log(((terminalBoard.length) + boardTerminal) + ": Loss State")
+//             return (terminalBoard.length) + boardTerminal;
+//         }
+//         else {
+//             // console.log(boardTerminal + ": Draw State")
+//             return boardTerminal;
+//         }
 
 
-    }
+//     }
 
      
-    let scores = []
-    let moves = []
+//     let scores = []
+//     let moves = []
 
 
-    if (maximizingPlayer) {
+//     if (maximizingPlayer) {
        
-        let input = "";
-        let inputBoard = board.filter( element => {
-            return (element == "");
-        });
-        (inputBoard.length % 2) ? (input = "X") : (input = "O");
+//         let input = "";
+//         let inputBoard = board.filter( element => {
+//             return (element == "");
+//         });
+//         (inputBoard.length % 2) ? (input = "X") : (input = "O");
 
-        board.forEach( (child, index) => {
-            if ( child !== "") return;
-            let passBoard = [...board];
-            passBoard[index] = input;
-            // let checkValue = value;
-            // value = Math.max(value, miniMax(passBoard, false));
-            // // console.log(value);
-            // if ( value > maxVal ) {
-            //     // console.log('Old Choice ' + choice);
-            //     choice = index;
-            //     maxVal = value;
-            //     // console.log('New Choice ' + choice);
-            // }
+//         board.forEach( (child, index) => {
+//             if ( child !== "") return;
+//             let passBoard = [...board];
+//             passBoard[index] = input;
+//             // let checkValue = value;
+//             // value = Math.max(value, miniMax(passBoard, false));
+//             // // console.log(value);
+//             // if ( value > maxVal ) {
+//             //     // console.log('Old Choice ' + choice);
+//             //     choice = index;
+//             //     maxVal = value;
+//             //     // console.log('New Choice ' + choice);
+//             // }
 
-            let foo = miniMax(passBoard, false);
-            scores.push(foo);
-            moves.push(index);
+//             let foo = miniMax(passBoard, false);
+//             scores.push(foo);
+//             moves.push(index);
 
-        })
+//         })
 
-        // console.log('***')
-        // console.log(
-        // `     ---------
-        // ${(board[0] == '') ? " " : board[0]} | ${(board[1] == '') ? " " : board[1]} | ${(board[2] == '') ? " " : board[2]}
-        // ${(board[3] == '') ? " " : board[3]} | ${(board[4] == '') ? " " : board[4]} | ${(board[5] == '') ? " " : board[5]}
-        // ${(board[6] == '') ? " " : board[6]} | ${(board[7] == '') ? " " : board[7]} | ${(board[8] == '') ? " " : board[8]}
-        // ---------`);
+//         // console.log('***')
+//         // console.log(
+//         // `     ---------
+//         // ${(board[0] == '') ? " " : board[0]} | ${(board[1] == '') ? " " : board[1]} | ${(board[2] == '') ? " " : board[2]}
+//         // ${(board[3] == '') ? " " : board[3]} | ${(board[4] == '') ? " " : board[4]} | ${(board[5] == '') ? " " : board[5]}
+//         // ${(board[6] == '') ? " " : board[6]} | ${(board[7] == '') ? " " : board[7]} | ${(board[8] == '') ? " " : board[8]}
+//         // ---------`);
 
-        console.log(
-`Maximizing
-Currently testing input: ${input} 
-scores: ${scores}
-moves: ${moves}`);
+//         console.log(
+// `Maximizing
+// Currently testing input: ${input} 
+// scores: ${scores}
+// moves: ${moves}`);
 
-        let highestVal = Math.max(...scores);
-        choice = moves[scores.indexOf(highestVal)]
+//         let highestVal = Math.max(...scores);
+//         choice = moves[scores.indexOf(highestVal)]
 
-        return highestVal;
+//         return highestVal;
                
-    } else {
+//     } else {
 
-        // Determine which input to use in passBoard
-        let input = "";
-        let inputBoard = board.filter( element => {
-            return (element == "");
-        });
-        (inputBoard.length % 2) ? (input = "X") : (input = "O");
+//         // Determine which input to use in passBoard
+//         let input = "";
+//         let inputBoard = board.filter( element => {
+//             return (element == "");
+//         });
+//         (inputBoard.length % 2) ? (input = "X") : (input = "O");
 
-        board.forEach( (child, index) => {
-            if ( child !== "") return;
-            let passBoard = [...board];
-            passBoard[index] = input;
-            // let checkValue = value;
-            // value = Math.min(value, miniMax(passBoard, true));
-            // // console.log(value);
-            // if ( value < minVal ) {
-            //     // console.log('Old Choice ' + choice);
-            //     choice = index;
-            //     minVal = value;
-            //     // console.log('New Choice ' + choice);
-            // }
+//         board.forEach( (child, index) => {
+//             if ( child !== "") return;
+//             let passBoard = [...board];
+//             passBoard[index] = input;
+//             // let checkValue = value;
+//             // value = Math.min(value, miniMax(passBoard, true));
+//             // // console.log(value);
+//             // if ( value < minVal ) {
+//             //     // console.log('Old Choice ' + choice);
+//             //     choice = index;
+//             //     minVal = value;
+//             //     // console.log('New Choice ' + choice);
+//             // }
 
-            let foo = miniMax(passBoard, true);
-            scores.push(foo);
-            moves.push(index);
+//             let foo = miniMax(passBoard, true);
+//             scores.push(foo);
+//             moves.push(index);
 
-        })
+//         })
 
-        // console.log('***')
-        // console.log(
-        // `     ---------
-        // ${(board[0] == '') ? " " : board[0]} | ${(board[1] == '') ? " " : board[1]} | ${(board[2] == '') ? " " : board[2]}
-        // ${(board[3] == '') ? " " : board[3]} | ${(board[4] == '') ? " " : board[4]} | ${(board[5] == '') ? " " : board[5]}
-        // ${(board[6] == '') ? " " : board[6]} | ${(board[7] == '') ? " " : board[7]} | ${(board[8] == '') ? " " : board[8]}
-        // ---------`);
+//         // console.log('***')
+//         // console.log(
+//         // `     ---------
+//         // ${(board[0] == '') ? " " : board[0]} | ${(board[1] == '') ? " " : board[1]} | ${(board[2] == '') ? " " : board[2]}
+//         // ${(board[3] == '') ? " " : board[3]} | ${(board[4] == '') ? " " : board[4]} | ${(board[5] == '') ? " " : board[5]}
+//         // ${(board[6] == '') ? " " : board[6]} | ${(board[7] == '') ? " " : board[7]} | ${(board[8] == '') ? " " : board[8]}
+//         // ---------`);
 
-        console.log(
-`Minimizing
-Currently testing input: ${input} 
-scores: ${scores}
-moves: ${moves}`);
+//         console.log(
+// `Minimizing
+// Currently testing input: ${input} 
+// scores: ${scores}
+// moves: ${moves}`);
 
-        let lowestVal = Math.min(...scores);
-        choice = moves[scores.indexOf(lowestVal)]
+//         let lowestVal = Math.min(...scores);
+//         choice = moves[scores.indexOf(lowestVal)]
 
-        return lowestVal;
+//         return lowestVal;
 
-    }
+//     }
 
-}
+// }
 
-function isBoardTerminal (board) {
-    //Is board winning board?
+// function isBoardTerminal (board) {
+//     //Is board winning board?
 
-    const winBoard = board;
-    let keyPiece;
+//     const winBoard = board;
+//     let keyPiece;
     
 
-    let remainingMovesBoard = board.filter( element => {
-        return (element === "");
-    });
+//     let remainingMovesBoard = board.filter( element => {
+//         return (element === "");
+//     });
     
-    // Getting the remaining open slots to calculate who goes next, then subtracting 1 to get who went previously
-    let mostRecentInput = ((remainingMovesBoard.length - 1) % 2) ? "X" : "O";
+//     // Getting the remaining open slots to calculate who goes next, then subtracting 1 to get who went previously
+//     let mostRecentInput = ((remainingMovesBoard.length - 1) % 2) ? "X" : "O";
 
-    let terminalBoardValue = 0;
+//     let terminalBoardValue = 0;
 
-    // Vertical Winning positions 
-    /* 
-    X | O | O     O | X | O     O | O | x     
-    X | O | O     O | X | O     O | O | X     
-    X | O | O     O | X | O     O | O | X     
-    */
-    keyPiece = winBoard[0];
-    if(keyPiece !== "") {
-        if( winBoard[3] === keyPiece && winBoard[6] === keyPiece) {
-            // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a vertical winning position, slots 0,3,6`)
-            if(mostRecentInput === miniMaxCaller) {
-                terminalBoardValue = 100;
-            } else {
-                terminalBoardValue = -100;
-            }
-            return terminalBoardValue;
-        }
-    }
-    keyPiece = winBoard[1];
-    if(keyPiece !== "") {
-        if( winBoard[4] === keyPiece && winBoard[7] === keyPiece) {
-            // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a vertical winning position, slots 1,4,7`)
-            if(mostRecentInput === miniMaxCaller) {
-                terminalBoardValue = 100;
-            } else {
-                terminalBoardValue = -100;
-            }
-            return terminalBoardValue;
-                }
-    }
-    keyPiece = winBoard[2];
-    if(keyPiece !== "") {
-        if( winBoard[5] === keyPiece && winBoard[8] === keyPiece) {
-            // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a vertical winning position, slots 2,5,8`)
-            if(mostRecentInput === miniMaxCaller) {
-                terminalBoardValue = 100;
-            } else {
-                terminalBoardValue = -100;
-            }
-            return terminalBoardValue;
-                }
-    }
+//     // Vertical Winning positions 
+//     /* 
+//     X | O | O     O | X | O     O | O | x     
+//     X | O | O     O | X | O     O | O | X     
+//     X | O | O     O | X | O     O | O | X     
+//     */
+//     keyPiece = winBoard[0];
+//     if(keyPiece !== "") {
+//         if( winBoard[3] === keyPiece && winBoard[6] === keyPiece) {
+//             // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a vertical winning position, slots 0,3,6`)
+//             if(mostRecentInput === miniMaxCaller) {
+//                 terminalBoardValue = 100;
+//             } else {
+//                 terminalBoardValue = -100;
+//             }
+//             return terminalBoardValue;
+//         }
+//     }
+//     keyPiece = winBoard[1];
+//     if(keyPiece !== "") {
+//         if( winBoard[4] === keyPiece && winBoard[7] === keyPiece) {
+//             // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a vertical winning position, slots 1,4,7`)
+//             if(mostRecentInput === miniMaxCaller) {
+//                 terminalBoardValue = 100;
+//             } else {
+//                 terminalBoardValue = -100;
+//             }
+//             return terminalBoardValue;
+//                 }
+//     }
+//     keyPiece = winBoard[2];
+//     if(keyPiece !== "") {
+//         if( winBoard[5] === keyPiece && winBoard[8] === keyPiece) {
+//             // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a vertical winning position, slots 2,5,8`)
+//             if(mostRecentInput === miniMaxCaller) {
+//                 terminalBoardValue = 100;
+//             } else {
+//                 terminalBoardValue = -100;
+//             }
+//             return terminalBoardValue;
+//                 }
+//     }
 
-    // Horizontal Winning positions 
-    /* 
-    X | X | X     O | O | O     O | O | O     
-    O | O | O     X | X | X     O | O | O     
-    O | O | O     O | O | O     X | X | X     
-    */
-    keyPiece = winBoard[0];
-    if(keyPiece !== "") {
-        if( winBoard[1] === keyPiece && winBoard[2] === keyPiece) {
-            // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Horizontal winning position, slots 0,1,2`)
-            if(mostRecentInput === miniMaxCaller) {
-                terminalBoardValue = 100;
-            } else {
-                terminalBoardValue = -100;
-            }
-            return terminalBoardValue;
-                }
-    }
-    keyPiece = winBoard[3];
-    if(keyPiece !== "") {
-        if( winBoard[4] === keyPiece && winBoard[5] === keyPiece) {
-            // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Horizontal winning position, slots 3,4,5`)
-            if(mostRecentInput === miniMaxCaller) {
-                terminalBoardValue = 100;
-            } else {
-                terminalBoardValue = -100;
-            }
-            return terminalBoardValue;
-                }
-    }
-    keyPiece = winBoard[6];
-    if(keyPiece !== "") {
-        if( winBoard[7] === keyPiece && winBoard[8] === keyPiece) {
-            // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Horizontal winning position, slots 6,7,8`)
-            if(mostRecentInput === miniMaxCaller) {
-                terminalBoardValue = 100;
-            } else {
-                terminalBoardValue = -100;
-            }
-            return terminalBoardValue;
-        }
-    }
+//     // Horizontal Winning positions 
+//     /* 
+//     X | X | X     O | O | O     O | O | O     
+//     O | O | O     X | X | X     O | O | O     
+//     O | O | O     O | O | O     X | X | X     
+//     */
+//     keyPiece = winBoard[0];
+//     if(keyPiece !== "") {
+//         if( winBoard[1] === keyPiece && winBoard[2] === keyPiece) {
+//             // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Horizontal winning position, slots 0,1,2`)
+//             if(mostRecentInput === miniMaxCaller) {
+//                 terminalBoardValue = 100;
+//             } else {
+//                 terminalBoardValue = -100;
+//             }
+//             return terminalBoardValue;
+//                 }
+//     }
+//     keyPiece = winBoard[3];
+//     if(keyPiece !== "") {
+//         if( winBoard[4] === keyPiece && winBoard[5] === keyPiece) {
+//             // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Horizontal winning position, slots 3,4,5`)
+//             if(mostRecentInput === miniMaxCaller) {
+//                 terminalBoardValue = 100;
+//             } else {
+//                 terminalBoardValue = -100;
+//             }
+//             return terminalBoardValue;
+//                 }
+//     }
+//     keyPiece = winBoard[6];
+//     if(keyPiece !== "") {
+//         if( winBoard[7] === keyPiece && winBoard[8] === keyPiece) {
+//             // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Horizontal winning position, slots 6,7,8`)
+//             if(mostRecentInput === miniMaxCaller) {
+//                 terminalBoardValue = 100;
+//             } else {
+//                 terminalBoardValue = -100;
+//             }
+//             return terminalBoardValue;
+//         }
+//     }
 
-    // Diagonal Winning Positions
-    /* 
-    X | O | O     O | O | X     
-    O | X | O     O | X | O     
-    O | O | X     X | O | O    
-    */
-    keyPiece = winBoard[0];
-    if(keyPiece !== "") {
-        if( winBoard[4] === keyPiece && winBoard[8] === keyPiece) {
-            // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Diagonal winning position, slots 0,4,8`)
-            if(mostRecentInput === miniMaxCaller) {
-                terminalBoardValue = 100;
-            } else {
-                terminalBoardValue = -100;
-            }
-            return terminalBoardValue;
-        }
-    }
-    keyPiece = winBoard[2];
-    if(keyPiece !== "") {
-        if( winBoard[4] === keyPiece && winBoard[6] === keyPiece) {
-            // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Diagonal winning position, slots 2,4,6`)
-            if(mostRecentInput === miniMaxCaller) {
-                terminalBoardValue = 100;
-            } else {
-                terminalBoardValue = -100;
-            }
-            return terminalBoardValue;
-        }
-    }
+//     // Diagonal Winning Positions
+//     /* 
+//     X | O | O     O | O | X     
+//     O | X | O     O | X | O     
+//     O | O | X     X | O | O    
+//     */
+//     keyPiece = winBoard[0];
+//     if(keyPiece !== "") {
+//         if( winBoard[4] === keyPiece && winBoard[8] === keyPiece) {
+//             // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Diagonal winning position, slots 0,4,8`)
+//             if(mostRecentInput === miniMaxCaller) {
+//                 terminalBoardValue = 100;
+//             } else {
+//                 terminalBoardValue = -100;
+//             }
+//             return terminalBoardValue;
+//         }
+//     }
+//     keyPiece = winBoard[2];
+//     if(keyPiece !== "") {
+//         if( winBoard[4] === keyPiece && winBoard[6] === keyPiece) {
+//             // console.log(`WIN CONDITION HAS BEEN FOUND WITH ${keyPiece} in a Diagonal winning position, slots 2,4,6`)
+//             if(mostRecentInput === miniMaxCaller) {
+//                 terminalBoardValue = 100;
+//             } else {
+//                 terminalBoardValue = -100;
+//             }
+//             return terminalBoardValue;
+//         }
+//     }
 
-    let finBoard = winBoard.filter( element => {
-        return (element === "");
-    })
-    // console.log(finBoard.length);
-    if (finBoard.length === 0) {
-        terminalBoardValue = 1;
-        // console.log("Draw Board");
-    }
+//     let finBoard = winBoard.filter( element => {
+//         return (element === "");
+//     })
+//     // console.log(finBoard.length);
+//     if (finBoard.length === 0) {
+//         terminalBoardValue = 1;
+//         // console.log("Draw Board");
+//     }
 
-    return terminalBoardValue;
+//     return terminalBoardValue;
 
-}
+// }
 
-function hardMove() {
-    choice = -1;
-    minVal = 0;
-    maxVal = 0;
-    miniMax(gameBoard.getInfo(), true);
-    console.log("Make a move in slot " + choice);
-}
+// function hardMove() {
+//     choice = -1;
+//     minVal = 0;
+//     maxVal = 0;
+//     miniMax(gameBoard.getInfo(), true);
+//     console.log("Make a move in slot " + choice);
+// }
